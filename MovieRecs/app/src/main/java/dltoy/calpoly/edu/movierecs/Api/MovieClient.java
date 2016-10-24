@@ -20,3 +20,6 @@ public class MovieClient {
         return retrofit;
     }
 }
+
+// answer to life's problems:
+//http://www.androidhive.info/2016/05/android-working-with-retrofit-http-library/
