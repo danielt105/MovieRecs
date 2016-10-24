@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single" android:id="@+id/options">
+    <item
+        android:id="@+id/home"
+        android:title="@string/home"/>
+        <item
+            android:id="@+id/advSearch"
+            android:title="@string/adv_search"/>
+        <item
+            android:id="@+id/watchlist"
+            android:title="@string/watchlist"/>
+    </group>
+
+</menu>
