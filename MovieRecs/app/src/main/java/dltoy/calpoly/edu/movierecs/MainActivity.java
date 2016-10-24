@@ -11,10 +11,16 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import dltoy.calpoly.edu.movierecs.Api.MovieApi;
+import dltoy.calpoly.edu.movierecs.Api.MovieClient;
+import dltoy.calpoly.edu.movierecs.Fragments.AdvancedSearchFragment;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private NavigationView navView;
     private Toolbar toolbar;
+    public static MovieApi apiService;
+
 //    private Fragment defaultFragment;
 
     @Override
@@ -35,8 +41,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navView = (NavigationView) findViewById(R.id.nav_view);
         navView.setNavigationItemSelectedListener(this);
 
+        //set up api client
+        apiService = MovieClient.getClient().create(MovieApi.class);
+
         //set default fragment and switch to it -- home screen
-//        switchToFragment();
+        switchToFragment(R.id.advSearch, R.string.adv_search, new AdvancedSearchFragment());
     }
 
     //Switches the fragment in the activity

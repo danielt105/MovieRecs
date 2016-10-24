@@ -7,4 +7,7 @@
     <string name="watchlist">Watchlist</string>
     <string name="open_drawer">Open navigation drawer</string>
     <string name="close_drawer">Close navigation drawer</string>
+
+    <!--advanced search-->
+    <string name="search">Search</string>
 </resources>
