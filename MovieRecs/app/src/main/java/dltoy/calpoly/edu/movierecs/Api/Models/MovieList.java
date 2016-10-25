@@ -12,4 +12,6 @@ import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 public class MovieList {
     @SerializedName("results") public List<Movie> results;
     @SerializedName("page") public int page;
+    @SerializedName("total_results") public int totalResults;
+    @SerializedName("total_pages") public int totalPages;
 }

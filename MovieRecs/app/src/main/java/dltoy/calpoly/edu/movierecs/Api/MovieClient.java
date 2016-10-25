@@ -1,6 +1,7 @@
 package dltoy.calpoly.edu.movierecs.Api;
 
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -15,6 +16,7 @@ public class MovieClient {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .build();
         }
         return retrofit;

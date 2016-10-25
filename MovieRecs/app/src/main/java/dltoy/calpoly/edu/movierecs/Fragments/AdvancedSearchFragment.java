@@ -11,22 +11,41 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 import dltoy.calpoly.edu.movierecs.Api.Models.MovieList;
 import dltoy.calpoly.edu.movierecs.BuildConfig;
 import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.R;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
-/**
- * Created by main on 10/24/2016.
- */
 public class AdvancedSearchFragment extends Fragment{
 
     TextView temp;
     EditText title;
     Button searchButton;
+    private Observer<MovieList> movieSubscriber;
+
+    public AdvancedSearchFragment() {
+        movieSubscriber = new Subscriber<MovieList>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e("error", e.toString());
+            }
+
+            @Override
+            public void onNext(MovieList movies) {
+                saveData(movies.results.get(0).description, movies.results.get(0).title); //purely for testing
+            }
+        };
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,6 +64,7 @@ public class AdvancedSearchFragment extends Fragment{
             @Override
             public void onClick(View v) {
                 sendRequest(); //purely for testing
+                //TODO: sanitize input
             }
         });
 
@@ -52,24 +72,15 @@ public class AdvancedSearchFragment extends Fragment{
         title.setText("Enter title here");
     }
 
-    private void sendRequest() {
-        Call<MovieList> call = MainActivity.apiService.searchByTitle(BuildConfig.apiKey, "Frozen");
-        call.enqueue(new Callback<MovieList>() {
-            @Override
-            public void onResponse(Call<MovieList> call, Response<MovieList> response) {
-                Log.d("API response", "Response received: " + response.body() + " code: " +
-                response.code());
-                if (response.code() != 404) {
-                    Log.d("movie data", response.body().results.get(0).title);
-                    temp.setText(response.body().results.get(0).title);
-                }
-            }
+    private void saveData(String data, String data2) {
+        temp.setText(data2);
+        title.setText(data);
+    }
 
-            @Override
-            public void onFailure(Call<MovieList>call, Throwable t) {
-                // Log error here since request failed
-                Log.e("API response", t.toString());
-            }
-        });
+    private void sendRequest() {
+        MainActivity.apiService.searchByTitle(BuildConfig.apiKey, "Frozen")
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(movieSubscriber);
     }
 }
