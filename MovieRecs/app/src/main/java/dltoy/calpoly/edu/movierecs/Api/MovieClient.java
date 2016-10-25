@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by main on 10/24/2016.
  */
 public class MovieClient {
-    public static final String BASE_URL = "http://www.omdbapi.com/";
+    public static final String BASE_URL = "https://api.themoviedb.org/3/";
     private static Retrofit retrofit = null;
 
     public static Retrofit getClient() {
