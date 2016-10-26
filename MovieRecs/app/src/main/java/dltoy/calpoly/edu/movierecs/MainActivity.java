@@ -13,13 +13,16 @@ import android.view.MenuItem;
 
 import dltoy.calpoly.edu.movierecs.Api.MovieApi;
 import dltoy.calpoly.edu.movierecs.Api.MovieClient;
+import dltoy.calpoly.edu.movierecs.Database.DBHandler;
 import dltoy.calpoly.edu.movierecs.Fragments.AdvancedSearchFragment;
+import dltoy.calpoly.edu.movierecs.Fragments.WatchlistFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private NavigationView navView;
     private Toolbar toolbar;
     public static MovieApi apiService;
+    public static DBHandler db;
 
 //    private Fragment defaultFragment;
 
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //set up api client
         apiService = MovieClient.getClient().create(MovieApi.class);
+        db = new DBHandler(this);
 
         //set default fragment and switch to it -- home screen
         switchToFragment(R.id.advSearch, R.string.adv_search, new AdvancedSearchFragment());
@@ -63,8 +67,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.home:
                 break;
             case R.id.advSearch:
+                switchToFragment(R.id.advSearch, R.string.adv_search, new AdvancedSearchFragment());
                 break;
             case R.id.watchlist:
+                switchToFragment(R.id.watchlist, R.string.watchlist, new WatchlistFragment());
                 break;
             default:
                 Log.e("Nav drawer selection", "gave id: " + id);
