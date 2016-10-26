@@ -12,6 +12,8 @@
     <string name="search">Search</string>
     <string name="title_hint">Enter title</string>
 
-    <!--watchlist-->
+
     <string name="save">Save to Watchlist</string>
+
+    <!--watchlist-->
 </resources>
