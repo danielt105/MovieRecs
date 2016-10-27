@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 public class WatchlistPagerAdapter extends FragmentStatePagerAdapter
 {
 //    private String tabTitles[] = CruApplication.getContext().getResources().getStringArray(R.array.myrides_titles);
-    private String tabTitles[] = {"Watched", "Not so watched"};
+    private String tabTitles[] = {"Watched", "Not so watched"}; //TODO: put this into strings.xml
     final int PAGE_COUNT = tabTitles.length;
 
     public WatchlistPagerAdapter(FragmentManager fm) {
@@ -38,7 +38,6 @@ public class WatchlistPagerAdapter extends FragmentStatePagerAdapter
 
     @Override
     public CharSequence getPageTitle(int position) {
-        // Generate title based on item position
         return tabTitles[position];
     }
 }

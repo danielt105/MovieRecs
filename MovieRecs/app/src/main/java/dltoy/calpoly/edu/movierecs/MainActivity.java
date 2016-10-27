@@ -1,7 +1,5 @@
 package dltoy.calpoly.edu.movierecs;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -26,7 +24,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static MovieApi apiService;
     public static DBHandler db;
 
-//    private Fragment defaultFragment;
+    private static final String CUR_FRAG_KEY = "current_fragment";
+    private int curFragId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,15 +49,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         apiService = MovieClient.getClient().create(MovieApi.class);
         db = new DBHandler(this);
 
-        //set default fragment and switch to it -- home screen
-        switchToFragment(R.id.advSearch, R.string.adv_search, new AdvancedSearchFragment());
+        curFragId = savedInstanceState == null ? -1 : savedInstanceState.getInt(CUR_FRAG_KEY);
+        switchToFragment(curFragId == -1 ? R.id.advSearch : curFragId);
     }
 
     //Switches the fragment in the activity
-    private void switchToFragment(int navId, int newTitle, Fragment newFragment) {
-        navView.setCheckedItem(navId);
+    private void switchToFragment(int navId) {
+        Fragment temp = (Fragment) getSupportFragmentManager().findFragmentById(R.id.content);
+        switch (navId) {
+            case R.id.home:
+                curFragId = navId;
+                break;
+            case R.id.advSearch:
+                curFragId = navId;
+                if (temp == null || !(temp instanceof AdvancedSearchFragment)) {
+                    loadFragment(R.string.adv_search, R.id.advSearch, new AdvancedSearchFragment());
+                }
+                break;
+            case R.id.watchlist:
+                curFragId = navId;
+                if (temp == null || !(temp instanceof WatchlistFragment)) {
+                    loadFragment(R.string.watchlist, R.id.watchlist, new WatchlistFragment());
+                }
+                break;
+            default:
+                Log.e("Switching to Fragent", "unrecognized id: " + navId);
+        }
+    }
+
+    private void loadFragment(int newTitle, int layoutId, Fragment newFragment) {
         toolbar.setTitle(newTitle);
+        navView.setCheckedItem(layoutId);
         getSupportFragmentManager().beginTransaction().replace(R.id.content, newFragment).commit();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(CUR_FRAG_KEY, curFragId);
     }
 
     @Override
@@ -69,10 +97,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.home:
                 break;
             case R.id.advSearch:
-                switchToFragment(R.id.advSearch, R.string.adv_search, new AdvancedSearchFragment());
+                switchToFragment(R.id.advSearch);
                 break;
             case R.id.watchlist:
-                switchToFragment(R.id.watchlist, R.string.watchlist, new WatchlistFragment());
+                switchToFragment(R.id.watchlist);
                 break;
             default:
                 Log.e("Nav drawer selection", "gave id: " + id);
