@@ -15,6 +15,7 @@ import dltoy.calpoly.edu.movierecs.Api.MovieApi;
 import dltoy.calpoly.edu.movierecs.Api.MovieClient;
 import dltoy.calpoly.edu.movierecs.Database.DBHandler;
 import dltoy.calpoly.edu.movierecs.Fragments.AdvancedSearchFragment;
+import dltoy.calpoly.edu.movierecs.Fragments.GridFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.WatchlistFragment;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -58,7 +59,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Fragment temp = (Fragment) getSupportFragmentManager().findFragmentById(R.id.content);
         switch (navId) {
             case R.id.home:
+                Log.d("TEST", "in the case");
                 curFragId = navId;
+                if (temp == null || !(temp instanceof GridFragment)) {
+                    loadFragment(R.string.home, R.id.movie_grid, new GridFragment());
+                }
                 break;
             case R.id.advSearch:
                 curFragId = navId;
