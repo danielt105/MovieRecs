@@ -93,18 +93,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         boolean displayAsSelectedItem = true;
-        switch (id) {
-            case R.id.home:
-                break;
-            case R.id.advSearch:
-                switchToFragment(R.id.advSearch);
-                break;
-            case R.id.watchlist:
-                switchToFragment(R.id.watchlist);
-                break;
-            default:
-                Log.e("Nav drawer selection", "gave id: " + id);
-        }
+        switchToFragment(id);
 
         //close drawer after
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
