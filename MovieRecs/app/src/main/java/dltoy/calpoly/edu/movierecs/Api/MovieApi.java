@@ -12,6 +12,9 @@ public interface MovieApi {
     @GET("movie/top_rated")
     Observable<MovieList> getTopRated(@Query("api_key") String key);
 
+    @GET("movie/top_rated")
+    Observable<MovieList> getTopRated(@Query("api_key") String key, @Query("page") int number);
+
     @GET("search/movie")
     Observable<MovieList> searchByTitle(@Query("api_key") String key, @Query("query") String query);
 
