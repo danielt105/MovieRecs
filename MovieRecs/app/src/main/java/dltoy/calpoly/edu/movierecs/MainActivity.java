@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Fragment temp = (Fragment) getSupportFragmentManager().findFragmentById(R.id.content);
         switch (navId) {
             case R.id.home:
-                Log.d("TEST", "in the case");
                 curFragId = navId;
                 if (temp == null || !(temp instanceof GridFragment)) {
                     loadFragment(R.string.home, R.id.movie_grid, new GridFragment());
