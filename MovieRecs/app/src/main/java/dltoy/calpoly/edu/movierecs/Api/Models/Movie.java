@@ -7,6 +7,7 @@ public class Movie {
     private @SerializedName("title") String title;
     private @SerializedName("poster_path") String imagePath;
     private @SerializedName("overview") String description;
+    private @SerializedName("vote_average") float rating;
     private int dbid;
     private boolean isWatched;
 
@@ -56,5 +57,9 @@ public class Movie {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public float getRating() {
+        return rating;
     }
 }

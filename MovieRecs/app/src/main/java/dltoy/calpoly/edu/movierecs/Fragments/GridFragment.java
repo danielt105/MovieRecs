@@ -1,5 +1,6 @@
 package dltoy.calpoly.edu.movierecs.Fragments;
 
+import android.graphics.Rect;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -57,6 +58,36 @@ public class GridFragment extends Fragment {
         rv = (RecyclerView) getView().findViewById(R.id.movie_grid);
         rv.setLayoutManager(new GridLayoutManager(rv.getContext(), spanCount, GridLayoutManager.VERTICAL, false));
         rv.setAdapter(adapter);
+
+        // set the margins on each grid item
+        rv.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                int pos = parent.getChildLayoutPosition(view);
+                int edgeMargin = 16;
+                int innerMargin = edgeMargin / 2;
+
+                if (pos % 2 == 0) {
+                    outRect.left = edgeMargin;
+                    outRect.right = innerMargin;
+                } else {
+                    outRect.right = edgeMargin;
+                    outRect.left = innerMargin;
+                }
+
+                // check for the very top row or very bottom row which are edges
+                if (pos == 0 || pos == 1) {
+                    outRect.top = edgeMargin;
+                    outRect.bottom = innerMargin;
+                } else if (pos == movies.size() - 1 || pos == movies.size() - 2) {
+                    outRect.bottom = edgeMargin;
+                    outRect.top = innerMargin;
+                } else {
+                    outRect.top = innerMargin;
+                    outRect.bottom = innerMargin;
+                }
+            }
+        });
 
         swiperefresh = (SwipeRefreshLayout) getView().findViewById(R.id.swiperefresh);
         swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
