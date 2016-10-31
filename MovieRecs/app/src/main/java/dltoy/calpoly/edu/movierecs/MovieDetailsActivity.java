@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import dltoy.calpoly.edu.movierecs.Api.ImageUtil;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 import rx.Observer;
@@ -57,12 +59,15 @@ public class MovieDetailsActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ImageUtil.insertImage(movie.getImagePath(), 400, ((ImageView) findViewById(R.id.details_poster)));
+                //TODO: not inserting image for some reason
+
                 TextView title = (TextView) findViewById(R.id.details_title);
                 title.setText(movie.getTitle());
 
                 TextView rating = (TextView) findViewById(R.id.details_rating);
                 rating.setText(ImageUtil.starIcon + movie.getRating());
+
+                ((TextView) findViewById(R.id.details_desc)).setText(movie.getDescription());
 
                 Button btn = (Button) findViewById(R.id.details_add);
                 btn.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +78,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     }
                 });
 
-                ((TextView) findViewById(R.id.details_desc)).setText(movie.getDescription());
+                ImageView imageView = (ImageView) findViewById(R.id.details_poster);
+                Picasso.with(MovieDetailsActivity.this).load(ImageUtil.createImageURL(movie.getImagePath(), 300)).into(imageView);
             }
         });
     }

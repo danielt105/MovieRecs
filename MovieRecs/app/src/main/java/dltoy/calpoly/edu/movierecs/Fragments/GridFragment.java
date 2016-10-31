@@ -21,6 +21,7 @@ import java.util.List;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 import dltoy.calpoly.edu.movierecs.Api.Models.MovieList;
 import dltoy.calpoly.edu.movierecs.BuildConfig;
+import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.EndlessScrollListener;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.MovieGridAdapter;
 import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.R;
@@ -33,10 +34,10 @@ import rx.schedulers.Schedulers;
  */
 
 public class GridFragment extends Fragment {
+    private int curPage = 1;
     private int spanCount = 2;
     private RecyclerView rv;
     private List<Movie> movies;
-    private SwipeRefreshLayout swiperefresh;
     private MovieGridAdapter adapter;
 
     public GridFragment() {
@@ -56,8 +57,19 @@ public class GridFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         rv = (RecyclerView) getView().findViewById(R.id.movie_grid);
-        rv.setLayoutManager(new GridLayoutManager(rv.getContext(), spanCount, GridLayoutManager.VERTICAL, false));
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(rv.getContext(), spanCount, GridLayoutManager.VERTICAL, false);
+        rv.setLayoutManager(gridLayoutManager);
         rv.setAdapter(adapter);
+
+        EndlessScrollListener endlessScroll = new EndlessScrollListener(gridLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                updateMovies();
+            }
+        };
+
+        rv.addOnScrollListener(endlessScroll);
 
         // set the margins on each grid item
         rv.addItemDecoration(new RecyclerView.ItemDecoration() {
@@ -88,30 +100,20 @@ public class GridFragment extends Fragment {
                 }
             }
         });
-
-        swiperefresh = (SwipeRefreshLayout) getView().findViewById(R.id.swiperefresh);
-        swiperefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                updateMovies();
-            }
-        });
     }
 
     private void updateMovies() {
-        MainActivity.apiService.getTopRated(BuildConfig.apiKey)
+        MainActivity.apiService.getTopRated(BuildConfig.apiKey, curPage)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<MovieList>() {
                     @Override
                     public void onCompleted() {
-                        swiperefresh.setRefreshing(false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.e("Grid", "got an error loading movies");
-                        swiperefresh.setRefreshing(false);
                     }
 
                     @Override
@@ -120,5 +122,6 @@ public class GridFragment extends Fragment {
                         adapter.notifyDataSetChanged();
                     }
                 });
+        curPage++;
     }
 }
