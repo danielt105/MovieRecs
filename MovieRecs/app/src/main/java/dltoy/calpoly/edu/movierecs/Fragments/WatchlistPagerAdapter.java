@@ -3,6 +3,8 @@ package dltoy.calpoly.edu.movierecs.Fragments;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
+import android.view.ViewGroup;
 
 public class WatchlistPagerAdapter extends FragmentStatePagerAdapter
 {
@@ -39,5 +41,12 @@ public class WatchlistPagerAdapter extends FragmentStatePagerAdapter
     @Override
     public CharSequence getPageTitle(int position) {
         return tabTitles[position];
+    }
+
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        Fragment fragment = (Fragment) super.instantiateItem(container, position);
+//        registeredFragments.put(position, fragment);
+        return fragment;
     }
 }

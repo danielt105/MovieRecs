@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         db = new DBHandler(this);
 
         curFragId = savedInstanceState == null ? -1 : savedInstanceState.getInt(CUR_FRAG_KEY);
-        switchToFragment(curFragId == -1 ? R.id.advSearch : curFragId);
+        switchToFragment(curFragId == -1 ? R.id.home : curFragId);
     }
 
     //Switches the fragment in the activity
