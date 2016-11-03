@@ -1,14 +1,18 @@
 package dltoy.calpoly.edu.movierecs.Fragments;
 
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.R;
 
 public class WatchlistFragment extends Fragment {
@@ -32,6 +36,8 @@ public class WatchlistFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         tabLayout = (TabLayout) getView().findViewById(R.id.tabs);
+        tabLayout.setTabTextColors(ContextCompat.getColorStateList(getContext(),
+                ((MainActivity)getActivity()).getTextColor()));
         viewPager = (ViewPager) getView().findViewById(R.id.viewpager);
     }
 

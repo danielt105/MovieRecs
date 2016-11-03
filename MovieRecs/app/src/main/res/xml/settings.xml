@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <PreferenceCategory
+        android:title="@string/style_option_title">
+        <ListPreference
+            android:title="@string/style_title"
+            android:key="@string/style_key"
+            android:entries="@array/theme_options"
+            android:entryValues="@array/theme_values" />
+    </PreferenceCategory>
+</PreferenceScreen>

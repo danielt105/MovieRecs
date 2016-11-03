@@ -23,12 +23,14 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:textStyle="bold"
-            android:textColor="@color/gridText" />
+            android:textColor="@color/gridText"
+            android:background="@color/dim_foreground_disabled_material_light" />
 
         <TextView android:id="@+id/movie_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/gridText" />
+            android:textColor="@color/gridText"
+            android:background="@color/dim_foreground_disabled_material_light" />
     </LinearLayout>
 
 </FrameLayout>

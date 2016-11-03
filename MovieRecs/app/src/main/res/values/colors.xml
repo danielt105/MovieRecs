@@ -6,4 +6,24 @@
 
     <color name="gridInfoBg">#b9000000</color>
     <color name="gridText">#FFFFDD</color>
+
+    <color name="cruGold">#f9b620</color>
+    <color name="cruDarkGold">#A67100</color>
+    <color name="cruBlueish">#883531</color>
+    <color name="cruBlack">#342f2f</color>
+
+    <color name="forest">#2e4600</color>
+    <color name="lime">#a2c523</color>
+    <color name="earth">#7d4427</color>
+    <color name="grass">#486b00</color>
+
+    <color name="warmGray">#e1dfe3</color>
+    <color name="ice">#a1d6e2</color>
+    <color name="glacierBlue">#1995ad</color>
+    <color name="overcast">#f1f1f2</color>
+
+    <color name="stormSea">#335252</color>
+    <color name="fog">#d4dde1</color>
+    <color name="darkerFog">#6e7477</color>
+    <color name="charcoal">#2d3033</color>
 </resources>
