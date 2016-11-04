@@ -4,14 +4,21 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import dltoy.calpoly.edu.movierecs.R;
+
 /**
  * Created by connor on 10/28/16.
  */
 
 public class ImageUtil {
-    public static final String starIcon = "\u2b50 ";
+    public static final String STAR_ICON = "\u2b50 ";
+    public static final double WIDTH_HEIGHT_RATIO = 2/3;
+
     public static void insertImage(String path, int width, ImageView imageView) {
-        Picasso.with(imageView.getContext()).load(createImageURL(path, width)).into(imageView);
+        Picasso.with(imageView.getContext())
+                .load(createImageURL(path, width))
+                .placeholder(R.drawable.movie_placeholder)
+                .into(imageView);
     }
 
     public static String createImageURL(String path, int width) {

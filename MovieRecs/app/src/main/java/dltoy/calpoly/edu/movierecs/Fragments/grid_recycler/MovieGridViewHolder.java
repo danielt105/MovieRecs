@@ -1,16 +1,14 @@
 package dltoy.calpoly.edu.movierecs.Fragments.grid_recycler;
 
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import dltoy.calpoly.edu.movierecs.Api.ImageUtil;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
@@ -48,7 +46,7 @@ public class MovieGridViewHolder extends RecyclerView.ViewHolder implements View
 
         ImageUtil.insertImage(movie.getImagePath(), 300, poster);
         title.setText(movie.getTitle());
-        rating.setText(ImageUtil.starIcon + Float.toString(movie.getRating()));
+        rating.setText(ImageUtil.STAR_ICON + Float.toString(movie.getRating()));
     }
 
     @Override

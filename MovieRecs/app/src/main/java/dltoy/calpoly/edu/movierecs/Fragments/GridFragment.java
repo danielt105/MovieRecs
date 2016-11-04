@@ -26,6 +26,8 @@ import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.MovieGridAdapter;
 import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.R;
 import rx.Observer;
+import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
