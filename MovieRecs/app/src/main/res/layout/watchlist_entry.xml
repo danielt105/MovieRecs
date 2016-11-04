@@ -8,13 +8,17 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:id="@+id/watchlist_image"/>
-    <TextView
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/watchlist_entry_title"/>
-    <CheckBox
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.20"
-        android:id="@+id/watchlist_checkbox"/>
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/watchlist_entry_title"/>
+        <!--<Button-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:id="@+id/switch_list"/>-->
+    </LinearLayout>
 </LinearLayout>

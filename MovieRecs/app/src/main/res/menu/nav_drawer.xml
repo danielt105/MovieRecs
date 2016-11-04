@@ -11,5 +11,10 @@
             android:id="@+id/watchlist"
             android:title="@string/watchlist"/>
     </group>
+    <group android:checkableBehavior="single" android:id="@+id/settings_options">
+        <item
+            android:id="@+id/settings"
+            android:title="@string/settings"/>
+    </group>
 
 </menu>

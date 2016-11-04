@@ -8,32 +8,155 @@
         android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/title"/>
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/title_hint"
-                android:id="@+id/title_entry"/>
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/temp_img"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin">
 
-            <Button
-                android:layout_width="wrap_content"
+            <!--Title-->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/search_button"
-                android:text="@string/search"/>
-            <Button
-                android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/adv_search_entry">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.15"
+                    android:text="@string/title"/>
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.85"
+                    android:hint="@string/title_hint"
+                    android:id="@+id/title_entry"/>
+            </LinearLayout>
+
+            <!--Stars-->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/save_watch"
-                android:text="@string/save"/>
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/adv_search_entry">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.15"
+                    android:text="@string/num_star" />
+                <EditText
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.85"
+                    android:hint="@string/num_star_hint"
+                    android:id="@+id/star_entry"
+                    android:inputType="number"/>
+            </LinearLayout>
+
+            <!--Genre-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/adv_search_entry">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.15"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/genre" />
+                <android.support.v7.widget.AppCompatSpinner
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.65"
+                    android:layout_gravity="left"
+                    android:id="@+id/genre_entry"/>
+            </LinearLayout>
+
+            <!--Keywords-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="@dimen/adv_search_entry">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/keywords"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/keyword_hint"
+                    android:id="@+id/keyword_entry"/>
+            </LinearLayout>
+
+            <!--release date-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="@dimen/adv_search_entry">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/release_date"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.55"
+                        android:hint="@string/release_date_hint"
+                        android:inputType="number"
+                        android:id="@+id/release_date_date">
+                    </EditText>
+                    <android.support.v7.widget.AppCompatSpinner
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.45"
+                        android:id="@+id/release_date_relative"
+                        android:entries="@array/release_date_options">
+                    </android.support.v7.widget.AppCompatSpinner>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!--cast-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="@dimen/adv_search_entry">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cast"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/cast_hint"
+                    android:id="@+id/cast_entry"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/adv_search_entry">
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/search_button"
+                    android:text="@string/search"/>
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/clear"
+                    android:text="@string/clear"/>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

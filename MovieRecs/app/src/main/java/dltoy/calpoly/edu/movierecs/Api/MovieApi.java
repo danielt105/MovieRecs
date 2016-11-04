@@ -1,8 +1,9 @@
 package dltoy.calpoly.edu.movierecs.Api;
 
+import dltoy.calpoly.edu.movierecs.Api.Models.GenreList;
+import dltoy.calpoly.edu.movierecs.Api.Models.KeywordList;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 import dltoy.calpoly.edu.movierecs.Api.Models.MovieList;
-import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -22,6 +23,13 @@ public interface MovieApi {
     @GET("search/movie")
     Observable<MovieList> searchByTitle(@Query("api_key") String key, @Query("query") String query);
 
-//    @GET("/genre/movie/list")
-//    Call<Genre> getGenres(@Query("api_key") String key);
+    // super janky way of doing this but... we're including the query after the key
+    @GET("discover/movie")
+    Observable<MovieList> advSearch(@Query("api_key") String key, @Query("page") int page);
+
+    @GET("genre/movie/list")
+    Observable<GenreList> getGenres(@Query("api_key") String key);
+
+    @GET("search/keyword")
+    Observable<KeywordList> searchKeyword(@Query("api_key") String key, @Query("query") String query);
 }
