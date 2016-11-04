@@ -25,6 +25,7 @@ import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.EndlessScrollListener
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.MovieGridAdapter;
 import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.R;
+import retrofit2.Retrofit;
 import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
@@ -36,7 +37,6 @@ import rx.schedulers.Schedulers;
  */
 
 public class GridFragment extends Fragment {
-    private int curPage = 1;
     private int spanCount = 2;
     private RecyclerView rv;
     private List<Movie> movies;
@@ -45,7 +45,7 @@ public class GridFragment extends Fragment {
     public GridFragment() {
         movies = new ArrayList<>();
         adapter = new MovieGridAdapter(movies);
-        updateMovies();
+        updateMovies(1);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class GridFragment extends Fragment {
         EndlessScrollListener endlessScroll = new EndlessScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                updateMovies();
+                updateMovies(page);
             }
         };
 
@@ -104,8 +104,8 @@ public class GridFragment extends Fragment {
         });
     }
 
-    private void updateMovies() {
-        MainActivity.apiService.getTopRated(BuildConfig.apiKey, curPage)
+    private void updateMovies(int page) {
+        MainActivity.apiService.getTopRated(BuildConfig.apiKey, page)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<MovieList>() {
@@ -124,6 +124,5 @@ public class GridFragment extends Fragment {
                         adapter.notifyDataSetChanged();
                     }
                 });
-        curPage++;
     }
 }
