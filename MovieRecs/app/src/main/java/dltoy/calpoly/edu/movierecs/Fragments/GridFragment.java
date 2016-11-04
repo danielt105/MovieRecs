@@ -4,16 +4,12 @@ import android.graphics.Rect;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +18,12 @@ import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 import dltoy.calpoly.edu.movierecs.Api.Models.MovieList;
 import dltoy.calpoly.edu.movierecs.BuildConfig;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.EndlessScrollListener;
+import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.QueryType;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.MovieGridAdapter;
 import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.R;
-import retrofit2.Retrofit;
+import rx.Observable;
 import rx.Observer;
-import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -41,11 +36,11 @@ public class GridFragment extends Fragment {
     private RecyclerView rv;
     private List<Movie> movies;
     private MovieGridAdapter adapter;
+    private int totalPages = 1;
 
     public GridFragment() {
         movies = new ArrayList<>();
         adapter = new MovieGridAdapter(movies);
-        updateMovies(1);
     }
 
     @Override
@@ -57,6 +52,7 @@ public class GridFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        loadContent(getArguments(), 1);
 
         rv = (RecyclerView) getView().findViewById(R.id.movie_grid);
 
@@ -67,7 +63,9 @@ public class GridFragment extends Fragment {
         EndlessScrollListener endlessScroll = new EndlessScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                updateMovies(page);
+                if (page < totalPages) {
+                    loadContent(getArguments(), page);
+                }
             }
         };
 
@@ -104,9 +102,28 @@ public class GridFragment extends Fragment {
         });
     }
 
-    private void updateMovies(int page) {
-        MainActivity.apiService.getTopRated(BuildConfig.apiKey, page)
-                .subscribeOn(Schedulers.newThread())
+    private void loadContent(Bundle bundle, int page) {
+        int type = (int) bundle.get(QueryType.QUERY_TYPE);
+
+        switch (type) {
+            case QueryType.QUERY_TOP_RATED:
+                setUpRequest(MainActivity.apiService.getTopRated(BuildConfig.apiKey, page));
+                break;
+            case QueryType.QUERY_SEARCH:
+                setUpRequest(MainActivity.apiService.searchByTitle(BuildConfig.apiKey,
+                        (String) bundle.get(QueryType.QUERY_SEARCH_VALUE)));
+                break;
+            case QueryType.QUERY_RECS:
+                setUpRequest(MainActivity.apiService.getRecommendations(
+                        (int) bundle.get(QueryType.QUERY_MOVIE_ID),
+                        BuildConfig.apiKey,
+                        page));
+                break;
+        }
+    }
+
+    private void setUpRequest(Observable<MovieList> obs) {
+        obs.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<MovieList>() {
                     @Override
@@ -120,6 +137,7 @@ public class GridFragment extends Fragment {
 
                     @Override
                     public void onNext(MovieList movieList) {
+                        totalPages = movieList.totalPages;
                         movies.addAll(movieList.results);
                         adapter.notifyDataSetChanged();
                     }

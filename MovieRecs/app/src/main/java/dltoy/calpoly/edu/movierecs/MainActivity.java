@@ -21,6 +21,7 @@ import dltoy.calpoly.edu.movierecs.Fragments.AdvancedSearchFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.GridFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.SettingsFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.WatchlistFragment;
+import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.QueryType;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -70,7 +71,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.home:
                 curFragId = navId;
                 if (temp == null || !(temp instanceof GridFragment)) {
-                    loadFragment(R.string.home, R.id.movie_grid, new GridFragment());
+                    GridFragment gf = new GridFragment();
+                    Bundle bundle = new Bundle();
+
+                    bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_SEARCH);
+                    bundle.putString(QueryType.QUERY_SEARCH_VALUE, "apes");
+                    gf.setArguments(bundle);
+
+                    loadFragment(R.string.home, R.id.movie_grid, gf);
                 }
                 break;
             case R.id.advSearch:
