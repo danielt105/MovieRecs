@@ -26,4 +26,6 @@
     <color name="fog">#d4dde1</color>
     <color name="darkerFog">#6e7477</color>
     <color name="charcoal">#2d3033</color>
+
+    <color name="suggestionBg">#9e9e9e</color>
 </resources>

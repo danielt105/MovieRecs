@@ -6,14 +6,27 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import java.util.ArrayList;
+
+import br.com.mauker.materialsearchview.MaterialSearchView;
+import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
+import dltoy.calpoly.edu.movierecs.Api.Models.MovieList;
 import dltoy.calpoly.edu.movierecs.Api.MovieApi;
 import dltoy.calpoly.edu.movierecs.Api.MovieClient;
 import dltoy.calpoly.edu.movierecs.Database.DBHandler;
@@ -22,6 +35,10 @@ import dltoy.calpoly.edu.movierecs.Fragments.GridFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.SettingsFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.WatchlistFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.QueryType;
+import rx.Observer;
+import rx.Scheduler;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -74,8 +91,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     GridFragment gf = new GridFragment();
                     Bundle bundle = new Bundle();
 
-                    bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_SEARCH);
-                    bundle.putString(QueryType.QUERY_SEARCH_VALUE, "apes");
+                    bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_TOP_RATED);
                     gf.setArguments(bundle);
 
                     loadFragment(R.string.home, R.id.movie_grid, gf);
@@ -126,6 +142,111 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return displayAsSelectedItem;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.options, menu);
+
+        final MaterialSearchView searchView = (MaterialSearchView) findViewById(R.id.search_view);
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(final String query) {
+                Fragment frag = getSupportFragmentManager().findFragmentById(R.id.content);
+
+                if (frag instanceof GridFragment) {
+                    final GridFragment gf = (GridFragment) frag;
+                    gf.showLoadingIcon(true);
+
+                    toolbar.setTitle(getString(R.string.search_header) + query);
+
+                    apiService.searchByTitle(BuildConfig.apiKey, query)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(new Observer<MovieList>() {
+                                @Override
+                                public void onCompleted() {
+                                    searchView.closeSearch();
+                                    gf.showLoadingIcon(false);
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    Toast.makeText(MainActivity.this,
+                                            getString(R.string.movie_search_error) + query,
+                                            Toast.LENGTH_LONG).show();
+                                    gf.showLoadingIcon(false);
+                                    searchView.closeSearch();
+                                }
+
+                                @Override
+                                public void onNext(MovieList movieList) {
+                                    gf.resetMovies(movieList.results);
+                                }
+                            });
+                }
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Fragment frag = getSupportFragmentManager().findFragmentById(R.id.content);
+
+                if (frag instanceof GridFragment) {
+                    apiService.searchByTitle(BuildConfig.apiKey, newText)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(new Observer<MovieList>() {
+                                @Override
+                                public void onCompleted() {
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                }
+
+                                @Override
+                                public void onNext(MovieList movieList) {
+                                    for (Movie m : movieList.results) {
+                                        searchView.addSuggestion(m.getTitle());
+                                    }
+                                }
+                            });
+                }
+                return false;
+            }
+        });
+
+        searchView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                searchView.setQuery((String) parent.getItemAtPosition(position), true);
+                searchView.closeSearch();
+            }
+        });
+
+        searchView.setSearchViewListener(new MaterialSearchView.SearchViewListener() {
+            @Override
+            public void onSearchViewOpened() {
+                ((EditText) findViewById(br.com.mauker.materialsearchview.R.id.et_search)).setSingleLine();
+            }
+
+            @Override
+            public void onSearchViewClosed() {
+
+            }
+        });
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_search) {
+            ((MaterialSearchView) findViewById(R.id.search_view)).openSearch();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setupTheme() {
@@ -184,5 +305,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 color = R.color.cruBlack;
         }
         return color;
+    }
+
+    @Override
+    public void onBackPressed() {
+        MaterialSearchView searchView = (MaterialSearchView) findViewById(R.id.search_view);
+        if (searchView.isOpen()) {
+            searchView.closeSearch();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

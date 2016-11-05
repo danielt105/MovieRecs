@@ -47,4 +47,11 @@
         <!--<item name="app:tabTextColor">@color/fog</item>-->
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
+    
+    <style name="SearchBarStyle">
+        <item name="android:hint">@string/search_hint</item>
+        <item name="searchSuggestionBackground">@color/transparent</item>
+        <!--<item name="searchBackground">@color/transparent</item>-->
+
+    </style>
 </resources>

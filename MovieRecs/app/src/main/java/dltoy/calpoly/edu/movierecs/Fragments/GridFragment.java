@@ -4,6 +4,7 @@ import android.graphics.Rect;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -37,6 +38,7 @@ public class GridFragment extends Fragment {
     private List<Movie> movies;
     private MovieGridAdapter adapter;
     private int totalPages = 1;
+    private SwipeRefreshLayout srf;
 
     public GridFragment() {
         movies = new ArrayList<>();
@@ -52,6 +54,9 @@ public class GridFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        srf = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        srf.setEnabled(false);
+        //showLoadingIcon(true);
         loadContent(getArguments(), 1);
 
         rv = (RecyclerView) getView().findViewById(R.id.movie_grid);
@@ -128,6 +133,7 @@ public class GridFragment extends Fragment {
                 .subscribe(new Observer<MovieList>() {
                     @Override
                     public void onCompleted() {
+                        showLoadingIcon(false);
                     }
 
                     @Override
@@ -140,7 +146,18 @@ public class GridFragment extends Fragment {
                         totalPages = movieList.totalPages;
                         movies.addAll(movieList.results);
                         adapter.notifyDataSetChanged();
+                        showLoadingIcon(false);
                     }
                 });
+    }
+
+    public void resetMovies(List<Movie> movies) {
+        this.movies.clear();
+        this.movies.addAll(movies);
+        adapter.notifyDataSetChanged();
+    }
+
+    public void showLoadingIcon(boolean show) {
+        srf.setRefreshing(show);
     }
 }
