@@ -27,7 +27,7 @@ public class WatchlistNotWatchedFragment extends WatchedFragment {
     }
 
     protected void updateList() {
-        Log.e("Not watched", "hi");
+        Log.e("Not watched", "update list called");
         movies = (ArrayList<Movie>) MainActivity.db.getWatchlist(0);
         for (Movie m : movies) {
             Log.e("name", m.getTitle());

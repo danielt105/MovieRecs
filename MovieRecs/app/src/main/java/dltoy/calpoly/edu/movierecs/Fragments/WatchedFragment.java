@@ -1,6 +1,5 @@
 package dltoy.calpoly.edu.movierecs.Fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -31,7 +30,7 @@ public abstract class WatchedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        return inflater.inflate(R.layout.watchlist_not_watched, container, false);
+        return inflater.inflate(R.layout.watchlist, container, false);
     }
 
     @Override
@@ -59,7 +58,7 @@ public abstract class WatchedFragment extends Fragment {
                 movies.remove(index);
                 list.removeViewAt(index);
                 adapter.notifyItemRemoved(index);
-                adapter.notifyItemRangeChanged(index, movies.size());
+//                adapter.notifyItemRangeChanged(index, movies.size());
             }
         };
         new ItemTouchHelper(simpleCallback).attachToRecyclerView(list);
@@ -68,14 +67,14 @@ public abstract class WatchedFragment extends Fragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(isVisibleToUser) {
-            if (adapter != null) {
-                updateList();
-                adapter = new WatchlistAdapter(movies);
-                list.setAdapter(adapter);
+//        if(isVisibleToUser) {
+//            if (adapter != null) {
+//                updateList();
+//                adapter = new WatchlistAdapter(movies);
+//                list.setAdapter(adapter);
 //                adapter.notifyDataSetChanged();
-            }
-        }
+//            }
+//        }
     }
 
     abstract void updateList();

@@ -1,7 +1,6 @@
 package dltoy.calpoly.edu.movierecs.Fragments;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -14,8 +13,8 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistViewHolder> 
     private ArrayList<Movie> movies;
 
     public WatchlistAdapter(ArrayList<Movie> entries) {
-            this.movies = entries;
-            }
+        this.movies = entries;
+    }
 
     @Override
     public int getItemViewType(int position) {
@@ -36,4 +35,9 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistViewHolder> 
     public int getItemCount() {
         return movies.size();
     }
+
+    public void setMovies(ArrayList<Movie> newEntries) {
+        movies = newEntries;
+    }
+
 }

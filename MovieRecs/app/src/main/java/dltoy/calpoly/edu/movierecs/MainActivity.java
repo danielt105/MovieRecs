@@ -156,6 +156,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void setToolbarText(String text) {
+        toolbar.setTitle(text);
+    }
+
     public int getTextColor() {
         int curTheme = pref.getInt(THEME_KEY, 0);
         int color;

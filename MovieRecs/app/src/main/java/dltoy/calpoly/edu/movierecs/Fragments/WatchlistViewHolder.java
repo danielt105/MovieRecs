@@ -1,8 +1,10 @@
 package dltoy.calpoly.edu.movierecs.Fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Image;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -20,37 +22,35 @@ import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.MovieDetailsActivity;
 import dltoy.calpoly.edu.movierecs.R;
 
-public class WatchlistViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class WatchlistViewHolder extends RecyclerView.ViewHolder implements
+        View.OnClickListener, CompoundButton.OnCheckedChangeListener, View.OnLongClickListener {
 
     public static final int DEFAULT_IMG_WID = 300;
 
     private Context context;
     private TextView title;
-    private Button switchList;
+    private CheckBox switchList;
     private ImageView img;
     public Movie movie;
+    private boolean cheat = true; //toggle this off when switching between this
 
     public WatchlistViewHolder(View itemView) {
         super(itemView);
+        itemView.setOnLongClickListener(this);
         context = itemView.getContext();
         title = (TextView) itemView.findViewById(R.id.watchlist_entry_title);
         img = (ImageView) itemView.findViewById(R.id.watchlist_image);
-//        switchList = (Button) itemView.findViewById(R.id.switch_list);
-//        switchList.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-////                movie.setWatched(!movie.isWatched());
-////                int val = MainActivity.db.updateMovie(movie);
-////                Log.e("result: ", val + "");
-//            }
-//        });
+        switchList = (CheckBox) itemView.findViewById(R.id.watchlist_entry_checkbox);
+        switchList.setOnCheckedChangeListener(this);
         itemView.setOnClickListener(this);
     }
 
     public void bind(Movie m) {
         movie = m;
         title.setText(m.getTitle());
-//        switchList.setText(context.getString(!movie.isWatched() ? R.string.watched : R.string.not_watched));
+        cheat = false;
+        switchList.setChecked(m.isWatched());
+        cheat = true;
         ImageUtil.insertImage(m.getImagePath(), DEFAULT_IMG_WID, img);
     }
 
@@ -59,5 +59,46 @@ public class WatchlistViewHolder extends RecyclerView.ViewHolder implements View
         Intent details = new Intent(v.getContext(), MovieDetailsActivity.class);
         details.putExtra(MovieDetailsActivity.MOVIE_ID_EXTRA, movie.getId());
         v.getContext().startActivity(details);
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (cheat) {
+//            Log.e("check changed", movie.getTitle() + " set to " + isChecked);
+            movie.setWatched(isChecked);
+            MainActivity.db.updateMovie(movie);
+        }
+    }
+
+    @Override
+    public boolean onLongClick(View view) {
+        displayAlertDialog(view.getContext());
+        return true;
+    }
+
+    private void displayAlertDialog(Context c) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(c);
+        alertDialogBuilder.setTitle(context.getResources().getString(R.string.alert_dialog_title));
+
+        // set dialog message
+        alertDialogBuilder
+                .setMessage(context.getResources().getString(R.string.alert_dialog_text) + ": " +
+                        movie.getTitle() + "?")
+                .setPositiveButton(context.getResources().getString(R.string.remove),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                MainActivity.db.deleteMovie(movie);
+//                                notifyDataSetChanged(); //TODO: how...
+                            }
+                        })
+                .setNegativeButton(context.getResources().getString(R.string.cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 }

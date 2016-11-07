@@ -35,8 +35,18 @@
     <string name="movie_details_title">Movie Details</string>
 
     <!--watchlist-->
-    <string name="watched">Watched</string>
-    <string name="not_watched">Not Watched</string>
+    <string name="alert_dialog_title">Remove from Watchlist?</string>
+    <string name="alert_dialog_text">Are you sure you want to remove</string>
+    <string name="remove">Remove</string>
+    <string name="cancel">Cancel</string>
+    <string-array name="watchlist_titles">
+        <item>Not Watched List</item>
+        <item>Both Lists</item>
+        <item>Watched List</item>
+    </string-array>
+    <string name="watched_list">Watched List</string>
+    <string name="not_watched_list">Not Watched List</string>
+    <string name="both_lists">Both Lists</string>
 
     <!--settings-->
     <string name="settings">Settings</string>
