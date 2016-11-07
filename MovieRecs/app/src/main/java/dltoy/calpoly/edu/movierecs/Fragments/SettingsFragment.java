@@ -41,6 +41,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     private String getTheme() {
-        return " " + curThemes[themeNdx - 1];
+
+        return " " + curThemes[themeNdx > 0 ? themeNdx - 1 : 0];
     }
 }

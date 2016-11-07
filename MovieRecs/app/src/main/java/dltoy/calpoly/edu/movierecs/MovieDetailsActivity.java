@@ -1,14 +1,14 @@
 package dltoy.calpoly.edu.movierecs;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import dltoy.calpoly.edu.movierecs.Api.ImageUtil;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
@@ -24,6 +24,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+
         setTitle(getString(R.string.movie_details_title));
 
         int id = getIntent().getIntExtra(MOVIE_ID_EXTRA, 0);
@@ -57,12 +58,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ImageUtil.insertImage(movie.getImagePath(), 400, ((ImageView) findViewById(R.id.details_poster)));
                 TextView title = (TextView) findViewById(R.id.details_title);
                 title.setText(movie.getTitle());
 
                 TextView rating = (TextView) findViewById(R.id.details_rating);
-                rating.setText(ImageUtil.starIcon + movie.getRating());
+                rating.setText(ImageUtil.STAR_ICON + movie.getRating());
+
+                ((TextView) findViewById(R.id.details_desc)).setText(movie.getDescription());
 
                 Button btn = (Button) findViewById(R.id.details_add);
                 btn.setOnClickListener(new View.OnClickListener() {
@@ -73,7 +75,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     }
                 });
 
-                ((TextView) findViewById(R.id.details_desc)).setText(movie.getDescription());
+                ImageView imageView = (ImageView) findViewById(R.id.details_poster);
+                Picasso.with(MovieDetailsActivity.this).load(ImageUtil.createImageURL(movie.getImagePath(), 300)).into(imageView);
             }
         });
     }

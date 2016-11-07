@@ -20,6 +20,10 @@ public interface MovieApi {
     @GET("movie/{id}")
     Observable<Movie> getById(@Path("id") int id, @Query("api_key") String key);
 
+    @GET("movie/{id}/recommendations")
+    Observable<MovieList> getRecommendations(@Path("id") int id, @Query("api_key") String key,
+                                             @Query("page") int page);
+
     @GET("search/movie")
     Observable<MovieList> searchByTitle(@Query("api_key") String key, @Query("query") String query);
 
