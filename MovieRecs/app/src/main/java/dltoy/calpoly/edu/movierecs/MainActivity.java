@@ -6,23 +6,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 
 import br.com.mauker.materialsearchview.MaterialSearchView;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
@@ -36,7 +31,6 @@ import dltoy.calpoly.edu.movierecs.Fragments.SettingsFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.WatchlistFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.QueryType;
 import rx.Observer;
-import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 

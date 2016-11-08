@@ -2,9 +2,8 @@ package dltoy.calpoly.edu.movierecs.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.res.ResourcesCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -14,9 +13,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
+
+import com.tokenautocomplete.TokenCompleteTextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -24,28 +23,31 @@ import java.util.List;
 
 import dltoy.calpoly.edu.movierecs.Api.Models.Genre;
 import dltoy.calpoly.edu.movierecs.Api.Models.GenreList;
-import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
+import dltoy.calpoly.edu.movierecs.Api.Models.Keyword;
+import dltoy.calpoly.edu.movierecs.Api.Models.KeywordList;
 import dltoy.calpoly.edu.movierecs.Api.Models.MovieList;
 import dltoy.calpoly.edu.movierecs.BuildConfig;
+import dltoy.calpoly.edu.movierecs.KeywordCompletionView;
 import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.R;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class AdvancedSearchFragment extends Fragment{
+public class AdvancedSearchFragment extends Fragment implements TokenCompleteTextView.TokenListener{
 
     public static final int MAX_MOVIE_RATING = 10;
 
     EditText title;
     Spinner genre;
     EditText numStar;
-//    Spinner rating;
-    EditText keywords;
     EditText cast;
     EditText releaseDate;
     Spinner releaseDateRel;
-    //Other things we can add: runtime
+
+    KeywordCompletionView keywords;
+    ArrayAdapter<Keyword> keywordAdapter;
+    public static Keyword[] words;
 
     Button searchButton;
     Button clearButton;
@@ -89,8 +91,52 @@ public class AdvancedSearchFragment extends Fragment{
         genre = (Spinner) getView().findViewById(R.id.genre_entry);
         numStar = (EditText) getView().findViewById(R.id.star_entry);
         numStar.addTextChangedListener(createTextWatcher(numStar, MAX_MOVIE_RATING));
-        keywords = (EditText) getView().findViewById(R.id.keyword_entry);
         cast = (EditText) getView().findViewById(R.id.cast_entry);
+
+        words = new Keyword[]{};
+        keywords = (KeywordCompletionView) getView().findViewById(R.id.keyword_entry);
+        keywords.setTextColor(ContextCompat.getColorStateList(getContext(),
+                ((MainActivity)getActivity()).getTextColor()));
+        keywords.setTokenListener(this);
+        keywords.setTokenClickStyle(TokenCompleteTextView.TokenClickStyle.Delete);
+        setKeywordAdapter();
+        keywords.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                MainActivity.apiService.searchKeyword(BuildConfig.apiKey, s.toString())
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<KeywordList>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e("keyword error", e.toString());
+                            }
+
+                            @Override
+                            public void onNext(KeywordList keywordList) {
+//                                Log.e("response", "got the list back");
+                                words = new Keyword[keywordList.results.size()];
+                                keywordList.results.toArray(words);
+                                setKeywordAdapter();
+                            }
+                        });
+            }
+        });
 
         releaseDate = (EditText) getView().findViewById(R.id.release_date_date);
         releaseDate.addTextChangedListener(createTextWatcher(
@@ -106,7 +152,6 @@ public class AdvancedSearchFragment extends Fragment{
             }
         });
 
-        //TODO: prompt to make sure they really want to delete
         clearButton = (Button) getView().findViewById(R.id.clear);
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,12 +159,18 @@ public class AdvancedSearchFragment extends Fragment{
                 title.setText("");
                 genre.setSelection(0);
                 numStar.setText("");
-                keywords.setText("");
                 cast.setText("");
                 releaseDate.setText("");
                 releaseDateRel.setSelection(0);
+                keywords.clear();
             }
         });
+    }
+
+    //This is a workaround to notifyDataSetChanged not working...
+    private void setKeywordAdapter() {
+        keywordAdapter = new ArrayAdapter<Keyword>(getContext(), android.R.layout.simple_list_item_1, words);
+        keywords.setAdapter(keywordAdapter);
     }
 
     private void sendRequest() {
@@ -134,8 +185,17 @@ public class AdvancedSearchFragment extends Fragment{
         return //title.getText().toString().isEmpty() ? "" : title.getText().toString() +
                 (genre.getSelectedItemPosition() == 0 ? "" : "with_genres=" + getGenreSelection()) + "3" +
                 (numStar.getText().toString().isEmpty() ? "" : "vote_count.gte=" + numStar.getText().toString()) +
-//                (keywords.getText().toString().isEmpty() ? "" : "with_keywords=" + getKeywords()) +
+                (keywords.getText().toString().isEmpty() ? "" : "with_keywords=" + getKeywords()) +
                 (cast.getText().toString().isEmpty() ? "" : "with_cast=" + cast.getText().toString());
+    }
+
+    private String getKeywords() {
+        List<Keyword> chosenKeywords = keywords.getObjects();
+        String idList = "";
+        for (Keyword k : chosenKeywords) {
+            idList += k.getId() + ",";
+        }
+        return idList.substring(0, idList.length() - 1);
     }
 
     private void getGenres() {
@@ -212,5 +272,17 @@ public class AdvancedSearchFragment extends Fragment{
                 }
             }
         };
+    }
+
+    @Override
+    public void onTokenAdded(Object token) {
+//        savedWords.add((Keyword)token);
+        Log.e("Added Keyword: ", token + " " + ((Keyword) token).getId());
+    }
+
+    @Override
+    public void onTokenRemoved(Object token) {
+//        savedWords.remove((Keyword)token);
+        Log.e("Removed Keyword: ", "" + token + " " + ((Keyword) token).getId());
     }
 }

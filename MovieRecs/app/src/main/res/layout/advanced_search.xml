@@ -84,11 +84,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/keywords"/>
-                <EditText
+                <dltoy.calpoly.edu.movierecs.KeywordCompletionView
+                    android:id="@+id/keyword_entry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/keyword_hint"
-                    android:id="@+id/keyword_entry"/>
+                    android:hint="@string/keyword_hint"/>
+                <!--<EditText-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:hint="@string/keyword_hint"-->
+                    <!--android:id="@+id/keyword_entry"/>-->
             </LinearLayout>
 
             <!--release date-->
