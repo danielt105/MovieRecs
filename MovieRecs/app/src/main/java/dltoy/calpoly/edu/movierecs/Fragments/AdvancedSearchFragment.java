@@ -183,7 +183,7 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
 
     private String buildQueryString() {
         return //title.getText().toString().isEmpty() ? "" : title.getText().toString() +
-                (genre.getSelectedItemPosition() == 0 ? "" : "with_genres=" + getGenreSelection()) + "3" +
+                (genre.getSelectedItemPosition() == 0 ? "" : "with_genres=" + getGenreSelection()) +
                 (numStar.getText().toString().isEmpty() ? "" : "vote_count.gte=" + numStar.getText().toString()) +
                 (keywords.getText().toString().isEmpty() ? "" : "with_keywords=" + getKeywords()) +
                 (cast.getText().toString().isEmpty() ? "" : "with_cast=" + cast.getText().toString());
