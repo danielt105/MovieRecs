@@ -24,8 +24,8 @@ import java.util.List;
 import dltoy.calpoly.edu.movierecs.Api.Models.Genre;
 import dltoy.calpoly.edu.movierecs.Api.Models.GenreList;
 import dltoy.calpoly.edu.movierecs.Api.Models.Keyword;
-import dltoy.calpoly.edu.movierecs.Api.Models.KeywordList;
-import dltoy.calpoly.edu.movierecs.Api.Models.MovieList;
+import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
+import dltoy.calpoly.edu.movierecs.Api.Models.ResultList;
 import dltoy.calpoly.edu.movierecs.BuildConfig;
 import dltoy.calpoly.edu.movierecs.KeywordCompletionView;
 import dltoy.calpoly.edu.movierecs.MainActivity;
@@ -52,13 +52,13 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
     Button searchButton;
     Button clearButton;
 
-    private Observer<MovieList> movieSubscriber;
+    private Observer<ResultList<Movie>> movieSubscriber;
     private ArrayAdapter<String> genreAdapter;
     private ArrayList<String> genreList;
     private ArrayList<Genre> genres;
 
     public AdvancedSearchFragment() {
-        movieSubscriber = new Observer<MovieList>() {
+        movieSubscriber = new Observer<ResultList<Movie>>() {
             @Override
             public void onCompleted() {
 
@@ -70,7 +70,7 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
             }
 
             @Override
-            public void onNext(MovieList movies) {
+            public void onNext(ResultList<Movie> movies) {
                 //TODO: populate some global list
             }
         };
@@ -116,7 +116,7 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
                 MainActivity.apiService.searchKeyword(BuildConfig.apiKey, s.toString())
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<KeywordList>() {
+                        .subscribe(new Observer<ResultList<Keyword>>() {
                             @Override
                             public void onCompleted() {
 
@@ -128,7 +128,7 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
                             }
 
                             @Override
-                            public void onNext(KeywordList keywordList) {
+                            public void onNext(ResultList<Keyword> keywordList) {
 //                                Log.e("response", "got the list back");
                                 words = new Keyword[keywordList.results.size()];
                                 keywordList.results.toArray(words);

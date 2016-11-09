@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
-import dltoy.calpoly.edu.movierecs.Api.Models.MovieList;
+import dltoy.calpoly.edu.movierecs.Api.Models.ResultList;
 import dltoy.calpoly.edu.movierecs.BuildConfig;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.EndlessScrollListener;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.QueryType;
@@ -127,10 +127,10 @@ public class GridFragment extends Fragment {
         }
     }
 
-    private void setUpRequest(Observable<MovieList> obs) {
+    private void setUpRequest(Observable<ResultList<Movie>> obs) {
         obs.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<MovieList>() {
+                .subscribe(new Observer<ResultList<Movie>>() {
                     @Override
                     public void onCompleted() {
                         showLoadingIcon(false);
@@ -142,7 +142,7 @@ public class GridFragment extends Fragment {
                     }
 
                     @Override
-                    public void onNext(MovieList movieList) {
+                    public void onNext(ResultList<Movie> movieList) {
                         totalPages = movieList.totalPages;
                         movies.addAll(movieList.results);
                         adapter.notifyDataSetChanged();

@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 import br.com.mauker.materialsearchview.MaterialSearchView;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
-import dltoy.calpoly.edu.movierecs.Api.Models.MovieList;
+import dltoy.calpoly.edu.movierecs.Api.Models.ResultList;
 import dltoy.calpoly.edu.movierecs.Api.MovieApi;
 import dltoy.calpoly.edu.movierecs.Api.MovieClient;
 import dltoy.calpoly.edu.movierecs.Database.DBHandler;
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     apiService.searchByTitle(BuildConfig.apiKey, query)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
-                            .subscribe(new Observer<MovieList>() {
+                            .subscribe(new Observer<ResultList<Movie>>() {
                                 @Override
                                 public void onCompleted() {
                                     searchView.closeSearch();
@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 }
 
                                 @Override
-                                public void onNext(MovieList movieList) {
+                                public void onNext(ResultList<Movie> movieList) {
                                     gf.resetMovies(movieList.results);
                                 }
                             });
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     apiService.searchByTitle(BuildConfig.apiKey, newText)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
-                            .subscribe(new Observer<MovieList>() {
+                            .subscribe(new Observer<ResultList<Movie>>() {
                                 @Override
                                 public void onCompleted() {
                                 }
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 }
 
                                 @Override
-                                public void onNext(MovieList movieList) {
+                                public void onNext(ResultList<Movie> movieList) {
                                     for (Movie m : movieList.results) {
                                         searchView.addSuggestion(m.getTitle());
                                     }
