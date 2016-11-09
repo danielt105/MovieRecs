@@ -1,4 +1,4 @@
-package dltoy.calpoly.edu.movierecs.Fragments;
+package dltoy.calpoly.edu.movierecs.Fragments.watchlist;
 
 import android.content.Context;
 import android.content.DialogInterface;

@@ -84,7 +84,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/keywords"/>
-                <dltoy.calpoly.edu.movierecs.KeywordCompletionView
+                <dltoy.calpoly.edu.movierecs.Fragments.advanced_search.KeywordCompletionView
                     android:id="@+id/keyword_entry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -138,11 +138,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/cast"/>
-                <EditText
+                <dltoy.calpoly.edu.movierecs.Fragments.advanced_search.PersonCompletionView
+                    android:id="@+id/cast_entry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/cast_hint"
-                    android:id="@+id/cast_entry"/>
+                    android:hint="@string/cast_hint"/>
+                <!--<EditText-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:hint="@string/cast_hint"-->
+                    <!--android:id="@+id/cast_entry"/>-->
             </LinearLayout>
 
             <LinearLayout

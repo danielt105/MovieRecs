@@ -1,4 +1,4 @@
-package dltoy.calpoly.edu.movierecs.Fragments;
+package dltoy.calpoly.edu.movierecs.Fragments.advanced_search;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,9 +25,9 @@ import dltoy.calpoly.edu.movierecs.Api.Models.Genre;
 import dltoy.calpoly.edu.movierecs.Api.Models.GenreList;
 import dltoy.calpoly.edu.movierecs.Api.Models.Keyword;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
+import dltoy.calpoly.edu.movierecs.Api.Models.Person;
 import dltoy.calpoly.edu.movierecs.Api.Models.ResultList;
 import dltoy.calpoly.edu.movierecs.BuildConfig;
-import dltoy.calpoly.edu.movierecs.KeywordCompletionView;
 import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.R;
 import rx.Observer;
@@ -47,7 +47,11 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
 
     KeywordCompletionView keywords;
     ArrayAdapter<Keyword> keywordAdapter;
-    public static Keyword[] words;
+    Keyword[] words;
+
+    PersonCompletionView persons;
+    ArrayAdapter<Person> personAdapter;
+    Person[] people;
 
     Button searchButton;
     Button clearButton;
@@ -138,6 +142,51 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
             }
         });
 
+        people = new Person[]{};
+        persons = (PersonCompletionView) getView().findViewById(R.id.cast_entry);
+        persons.setTextColor(ContextCompat.getColorStateList(getContext(),
+                ((MainActivity)getActivity()).getTextColor()));
+        persons.setTokenListener(this);
+        persons.setTokenClickStyle(TokenCompleteTextView.TokenClickStyle.Delete);
+        setPersonAdapter();
+        persons.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.e("sending requiest", "for " + s.toString());
+                MainActivity.apiService.searchPerson(BuildConfig.apiKey, s.toString())
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<ResultList<Person>>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e("person error", e.toString());
+                            }
+
+                            @Override
+                            public void onNext(ResultList<Person> personList) {
+                                people = new Person[personList.results.size()];
+                                personList.results.toArray(people);
+                                setPersonAdapter();
+                            }
+                        });
+            }
+        });
+
         releaseDate = (EditText) getView().findViewById(R.id.release_date_date);
         releaseDate.addTextChangedListener(createTextWatcher(
                 releaseDate, Calendar.getInstance().get(Calendar.YEAR)));
@@ -171,6 +220,11 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
     private void setKeywordAdapter() {
         keywordAdapter = new ArrayAdapter<Keyword>(getContext(), android.R.layout.simple_list_item_1, words);
         keywords.setAdapter(keywordAdapter);
+    }
+
+    private void setPersonAdapter() {
+        personAdapter = new ArrayAdapter<Person>(getContext(), android.R.layout.simple_list_item_1, people);
+        persons.setAdapter(personAdapter);
     }
 
     private void sendRequest() {
@@ -274,15 +328,16 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
         };
     }
 
+    //TODO: remove these
     @Override
     public void onTokenAdded(Object token) {
 //        savedWords.add((Keyword)token);
-        Log.e("Added Keyword: ", token + " " + ((Keyword) token).getId());
+        Log.e("Added Keyword: ", token.toString());
     }
 
     @Override
     public void onTokenRemoved(Object token) {
 //        savedWords.remove((Keyword)token);
-        Log.e("Removed Keyword: ", "" + token + " " + ((Keyword) token).getId());
+        Log.e("Removed Keyword: ", "" + token);
     }
 }

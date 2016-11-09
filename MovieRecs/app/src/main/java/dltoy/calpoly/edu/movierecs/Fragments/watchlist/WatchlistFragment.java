@@ -1,4 +1,4 @@
-package dltoy.calpoly.edu.movierecs.Fragments;
+package dltoy.calpoly.edu.movierecs.Fragments.watchlist;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
+import dltoy.calpoly.edu.movierecs.Fragments.watchlist.WatchlistAdapter;
 import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.R;
 

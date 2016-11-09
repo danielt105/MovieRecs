@@ -19,6 +19,7 @@
     <string name="keywords">Keywords:</string>
     <string name="keyword_hint">Enter keywords</string>
     <string name="keyword_not_found">Keyword not found</string>
+    <string name="person_not_found">Person not found</string>
     <string name="cast">Cast</string>
     <string name="cast_hint">Enter cast</string>
     <string name="release_date">Release Date:</string>

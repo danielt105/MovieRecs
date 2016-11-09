@@ -3,6 +3,7 @@ package dltoy.calpoly.edu.movierecs.Api;
 import dltoy.calpoly.edu.movierecs.Api.Models.GenreList;
 import dltoy.calpoly.edu.movierecs.Api.Models.Keyword;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
+import dltoy.calpoly.edu.movierecs.Api.Models.Person;
 import dltoy.calpoly.edu.movierecs.Api.Models.ResultList;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -37,6 +38,9 @@ public interface MovieApi {
     @GET("search/keyword")
     Observable<ResultList<Keyword>> searchKeyword(@Query("api_key") String key, @Query("query") String query);
 
-//    @GET("search/person")
-//    Observable<ResultList<Person>> searchPerson(@Query("api_key") String key, @Query("query") String query);
+    @GET("search/person")
+    Observable<ResultList<Person>> searchPerson(@Query("api_key") String key, @Query("query") String query);
+
+    @GET("person/")
+    Observable<Person> searchPersonById(@Query("api_key") String key, @Path("id") int id);
 }

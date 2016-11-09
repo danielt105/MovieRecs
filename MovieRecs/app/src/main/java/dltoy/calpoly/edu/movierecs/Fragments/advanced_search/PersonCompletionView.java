@@ -1,4 +1,4 @@
-package dltoy.calpoly.edu.movierecs;
+package dltoy.calpoly.edu.movierecs.Fragments.advanced_search;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,20 +12,22 @@ import android.widget.TextView;
 
 import com.tokenautocomplete.TokenCompleteTextView;
 
-import dltoy.calpoly.edu.movierecs.Api.Models.Keyword;
+import dltoy.calpoly.edu.movierecs.Api.Models.Person;
+import dltoy.calpoly.edu.movierecs.MainActivity;
+import dltoy.calpoly.edu.movierecs.R;
 
-public class KeywordCompletionView extends TokenCompleteTextView<Keyword> {
-    private String NO_ENTRY = getResources().getString(R.string.keyword_not_found);
-    public KeywordCompletionView(Context context, AttributeSet attrs) {
+public class PersonCompletionView extends TokenCompleteTextView<Person> {
+    private String NO_ENTRY = getResources().getString(R.string.person_not_found);
+    public PersonCompletionView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     @Override
-    protected View getViewForObject(Keyword kw) {
+    protected View getViewForObject(Person p) {
 
         LayoutInflater l = (LayoutInflater) getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        TextView view = (TextView) l.inflate(R.layout.keyword_token, (ViewGroup) getParent(), false);
-        view.setText(kw.getName());
+        TextView view = (TextView) l.inflate(R.layout.person_token, (ViewGroup) getParent(), false);
+        view.setText(p.getName());
 
         int curTheme = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(MainActivity.THEME_KEY, 0);
         switch (curTheme) {
@@ -54,11 +56,11 @@ public class KeywordCompletionView extends TokenCompleteTextView<Keyword> {
 
     //Pretty sure this is just transferring the text back to the screen
     @Override
-    protected Keyword defaultObject(String completionText) {
+    protected Person defaultObject(String completionText) {
         if (completionText == null || completionText.equals("")) {
-            return new Keyword(-1, NO_ENTRY);
+            return new Person(-1, NO_ENTRY);
         } else {
-            return new Keyword(-1, completionText);
+            return new Person(-1, completionText);
         }
     }
 }
