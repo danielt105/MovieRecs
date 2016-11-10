@@ -1,5 +1,6 @@
 package dltoy.calpoly.edu.movierecs;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -42,7 +43,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static MovieApi apiService;
     public static DBHandler db;
 
-    private static final String CUR_FRAG_KEY = "current_fragment";
+    public static final int PREV_FRAG_KEY = 1;
+    public static final int PREV_FRAG = 2;
+    public static final String CUR_FRAG_KEY = "current_fragment";
     private int curFragId;
     private SharedPreferences pref;
 
@@ -73,6 +76,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         curFragId = savedInstanceState == null ? -1 : savedInstanceState.getInt(CUR_FRAG_KEY);
         switchToFragment(curFragId == -1 ? R.id.home : curFragId);
+    }
+
+    public void sendSearch(String[] query) {
+        GridFragment gf = new GridFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_ADV_SEARCH);
+        bundle.putStringArray(QueryType.QUERY_ADV_SEARCH_DATA, query);
+        gf.setArguments(bundle);
+        loadFragment(R.string.home, R.id.movie_grid, gf);
     }
 
     //Switches the fragment in the activity
@@ -312,6 +324,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             searchView.closeSearch();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.e("this was called", "activity result");
+        if (resultCode == PREV_FRAG) {
+            curFragId = data.getIntExtra(CUR_FRAG_KEY, R.id.home);
         }
     }
 }

@@ -8,6 +8,7 @@ public class QueryType {
     public static final String QUERY_TYPE = "QUERY_TYPE";
     public static final String QUERY_SEARCH_VALUE = "QUERY_SEARCH_VALUE";
     public static final String QUERY_MOVIE_ID = "QUERY_MOVIE_ID";
+    public static final String QUERY_ADV_SEARCH_DATA = "QUERY_ADV_SEARCH";
 
     public static final int QUERY_TOP_RATED = 0;
     public static final int QUERY_SEARCH = 1;

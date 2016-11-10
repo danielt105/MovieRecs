@@ -1,5 +1,6 @@
 package dltoy.calpoly.edu.movierecs.Fragments.watchlist;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,8 +24,10 @@ import dltoy.calpoly.edu.movierecs.R;
 
 public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.WatchlistViewHolder> {
     private ArrayList<Movie> movies;
+    private Context context;
 
-    public WatchlistAdapter(ArrayList<Movie> entries) {
+    public WatchlistAdapter(Context context, ArrayList<Movie> entries) {
+        this.context = context;
         this.movies = entries;
     }
 
@@ -88,7 +91,8 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
         public void onClick(View v) {
             Intent details = new Intent(v.getContext(), MovieDetailsActivity.class);
             details.putExtra(MovieDetailsActivity.MOVIE_ID_EXTRA, movie.getId());
-            v.getContext().startActivity(details);
+            details.putExtra(MainActivity.CUR_FRAG_KEY, R.id.watchlist);
+            ((Activity)context).startActivityForResult(details, MainActivity.PREV_FRAG_KEY);
         }
 
         @Override

@@ -28,9 +28,14 @@ public interface MovieApi {
     @GET("search/movie")
     Observable<ResultList<Movie>> searchByTitle(@Query("api_key") String key, @Query("query") String query);
 
-    // super janky way of doing this but... we're including the query after the key
+    // Retrofit ignores null params :D
     @GET("discover/movie")
-    Observable<ResultList<Movie>> advSearch(@Query("api_key") String key, @Query("page") int page);
+    Observable<ResultList<Movie>> advSearch(@Query("api_key") String key,
+                                            @Query("page") int page,
+                                            @Query("with_genres") String genres,
+                                            @Query("vote_count.gte") int voteCount,
+                                            @Query("with_keywords") String keywords,
+                                            @Query("with_cast") String cast);
 
     @GET("genre/movie/list")
     Observable<GenreList> getGenres(@Query("api_key") String key);

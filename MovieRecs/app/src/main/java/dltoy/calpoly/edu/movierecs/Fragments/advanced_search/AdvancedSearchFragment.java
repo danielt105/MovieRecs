@@ -24,7 +24,6 @@ import java.util.List;
 import dltoy.calpoly.edu.movierecs.Api.Models.Genre;
 import dltoy.calpoly.edu.movierecs.Api.Models.GenreList;
 import dltoy.calpoly.edu.movierecs.Api.Models.Keyword;
-import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 import dltoy.calpoly.edu.movierecs.Api.Models.Person;
 import dltoy.calpoly.edu.movierecs.Api.Models.ResultList;
 import dltoy.calpoly.edu.movierecs.BuildConfig;
@@ -37,6 +36,7 @@ import rx.schedulers.Schedulers;
 public class AdvancedSearchFragment extends Fragment implements TokenCompleteTextView.TokenListener{
 
     public static final int MAX_MOVIE_RATING = 10;
+    public static final int QUERY_PARAM_COUNT = 4;
 
     EditText title;
     Spinner genre;
@@ -56,28 +56,11 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
     Button searchButton;
     Button clearButton;
 
-    private Observer<ResultList<Movie>> movieSubscriber;
     private ArrayAdapter<String> genreAdapter;
     private ArrayList<String> genreList;
     private ArrayList<Genre> genres;
 
     public AdvancedSearchFragment() {
-        movieSubscriber = new Observer<ResultList<Movie>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e("movielist error", e.toString());
-            }
-
-            @Override
-            public void onNext(ResultList<Movie> movies) {
-                //TODO: populate some global list
-            }
-        };
         getGenres();
     }
 
@@ -228,19 +211,16 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
     }
 
     private void sendRequest() {
-        Log.e("Search", "would have sent " + buildQueryString());
-//        MainActivity.apiService.searchByTitle(BuildConfig.apiKey + buildQueryString(), 1)
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(movieSubscriber);
+        ((MainActivity)getActivity()).sendSearch(getQueryParams());
     }
 
-    private String buildQueryString() {
-        return //title.getText().toString().isEmpty() ? "" : title.getText().toString() +
-                (genre.getSelectedItemPosition() == 0 ? "" : "with_genres=" + getGenreSelection()) +
-                (numStar.getText().toString().isEmpty() ? "" : "vote_count.gte=" + numStar.getText().toString()) +
-                (keywords.getText().toString().isEmpty() ? "" : "with_keywords=" + getKeywords()) +
-                (cast.getText().toString().isEmpty() ? "" : "with_cast=" + cast.getText().toString());
+    private String[] getQueryParams() {
+        return new String[] {
+            (genre.getSelectedItemPosition() == 0 ? "" : getGenreSelection()),
+            (numStar.getText().toString().isEmpty() ? "" : numStar.getText().toString()),
+            (keywords.getText().toString().isEmpty() ? "" : getKeywords()),
+            (cast.getText().toString().isEmpty() ? "" : getCast())
+        };
     }
 
     private String getKeywords() {
@@ -249,6 +229,14 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
         for (Keyword k : chosenKeywords) {
             idList += k.getId() + ",";
         }
+        return idList.substring(0, idList.length() - 1);
+    }
+
+    private String getCast() {
+        List<Person> chosenPpl = persons.getObjects();
+        String idList = "";
+        for (Person p : chosenPpl)
+            idList += p.getId() + ",";
         return idList.substring(0, idList.length() - 1);
     }
 

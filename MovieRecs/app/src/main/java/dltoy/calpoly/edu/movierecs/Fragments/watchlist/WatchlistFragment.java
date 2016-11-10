@@ -51,7 +51,7 @@ public class WatchlistFragment extends Fragment  {
         getLists();
 
         curList = new ArrayList<>();
-        adapter = new WatchlistAdapter(curList);
+        adapter = new WatchlistAdapter(getContext(), curList);
         modeWatched = 1;
         list = (RecyclerView)getView().findViewById(R.id.the_list);
         list.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));

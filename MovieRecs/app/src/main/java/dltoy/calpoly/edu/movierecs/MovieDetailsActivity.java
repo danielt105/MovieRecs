@@ -1,7 +1,13 @@
 package dltoy.calpoly.edu.movierecs;
 
+import android.content.Intent;
+import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.preference.PreferenceManager;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -19,9 +25,11 @@ import rx.schedulers.Schedulers;
 public class MovieDetailsActivity extends AppCompatActivity {
     public static final String MOVIE_ID_EXTRA = "MOVIE_ID_EXTRA";
     private Movie model;
+    private int fragToReturnTo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setupTheme();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
@@ -29,6 +37,19 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         int id = getIntent().getIntExtra(MOVIE_ID_EXTRA, 0);
         getMovieData(id);
+
+        fragToReturnTo = getIntent().getIntExtra(MainActivity.CUR_FRAG_KEY, R.id.home);
+        Log.e("got", fragToReturnTo + "");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e("setting", "intent " + fragToReturnTo);
+        Intent intent = new Intent();
+        intent.putExtra(MainActivity.CUR_FRAG_KEY, fragToReturnTo);
+        setResult(MainActivity.PREV_FRAG, intent);
+        finishActivity(MainActivity.PREV_FRAG_KEY);
     }
 
     private void getMovieData(int id) {
@@ -79,5 +100,25 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 Picasso.with(MovieDetailsActivity.this).load(ImageUtil.createImageURL(movie.getImagePath(), 300)).into(imageView);
             }
         });
+    }
+
+    private void setupTheme() {
+        int curTheme = PreferenceManager.getDefaultSharedPreferences(this).getInt(MainActivity.THEME_KEY, 0);
+        switch (curTheme) {
+            case 2:
+                setTheme(R.style.ReturnOfCruGold);
+                break;
+            case 3:
+                setTheme(R.style.Outdoorsy);
+                break;
+            case 4:
+                setTheme(R.style.IceIceBaby);
+                break;
+            case 5:
+                setTheme(R.style.UnderstatedVersatile);
+                break;
+            default:
+                setTheme(R.style.AppTheme);
+        }
     }
 }

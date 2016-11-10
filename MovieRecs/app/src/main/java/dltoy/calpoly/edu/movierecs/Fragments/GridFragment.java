@@ -18,6 +18,7 @@ import java.util.List;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 import dltoy.calpoly.edu.movierecs.Api.Models.ResultList;
 import dltoy.calpoly.edu.movierecs.BuildConfig;
+import dltoy.calpoly.edu.movierecs.Fragments.advanced_search.AdvancedSearchFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.EndlessScrollListener;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.QueryType;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.MovieGridAdapter;
@@ -124,6 +125,17 @@ public class GridFragment extends Fragment {
                         BuildConfig.apiKey,
                         page));
                 break;
+            case QueryType.QUERY_ADV_SEARCH:
+                String[] params = bundle.getStringArray(QueryType.QUERY_ADV_SEARCH_DATA);
+                if (params.length == AdvancedSearchFragment.QUERY_PARAM_COUNT)
+                    setUpRequest(MainActivity.apiService.advSearch(
+                            BuildConfig.apiKey,
+                            page,
+                            params[0],
+                            params[1].equals("") ? 0 : Integer.parseInt(params[1]),
+                            params[2],
+                            params[3]));
+                break;
         }
     }
 
@@ -138,7 +150,7 @@ public class GridFragment extends Fragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("Grid", "got an error loading movies");
+                        Log.e("Grid", "got an error loading movies" + e.getMessage());
                     }
 
                     @Override
@@ -146,6 +158,7 @@ public class GridFragment extends Fragment {
                         totalPages = movieList.totalPages;
                         movies.addAll(movieList.results);
                         adapter.notifyDataSetChanged();
+                        Log.e("results", totalPages + "");
                         showLoadingIcon(false);
                     }
                 });
