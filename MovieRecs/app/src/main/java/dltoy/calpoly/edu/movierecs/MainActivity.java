@@ -312,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 color = R.color.understated_versatile;
                 break;
             default:
-                color = R.color.cruBlack;
+                color = R.color.white;
         }
         return color;
     }

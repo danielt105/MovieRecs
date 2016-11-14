@@ -48,8 +48,8 @@ public class PersonCompletionView extends TokenCompleteTextView<Person> {
                 view.setTextColor(ContextCompat.getColor(getContext(), R.color.fog));
                 break;
             default:
-                view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.gray));
-                view.setTextColor(ContextCompat.getColor(getContext(), R.color.cruBlack));
+                view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+                view.setTextColor(ContextCompat.getColor(getContext(), R.color.colorPrimaryDark));
         }
         return view;
     }
