@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_ADV_SEARCH);
         bundle.putStringArray(QueryType.QUERY_ADV_SEARCH_DATA, query);
         gf.setArguments(bundle);
-        loadFragment(R.string.home, R.id.movie_grid, gf);
+        loadFragment(R.string.adv_search_results, R.id.movie_grid, gf);
     }
 
     //Switches the fragment in the activity

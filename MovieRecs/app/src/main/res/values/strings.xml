@@ -10,8 +10,6 @@
 
     <!--advanced search-->
     <string name="search">Search</string>
-    <string name="title">Title:</string>
-    <string name="title_hint">Enter title</string>
     <string name="genre">Genre:</string>
     <string name="genre_hint">Pick a genre</string>
     <string name="num_star">Rating:</string>
@@ -24,13 +22,15 @@
     <string name="cast_hint">Enter cast</string>
     <string name="release_date">Release Date:</string>
     <string name="release_date_hint">Enter release date</string>
+    <string name="release_date_error">Must specify both release date and pick a relative time</string>
     <string-array name="release_date_options">
         <item>Pick</item>
-        <item>Before</item>
-        <item>In</item>
-        <item>After</item>
+        <item>Before (&lt;=)</item>
+        <item>After (&gt;=)</item>
     </string-array>
     <string name="clear">Clear</string>
+    <string name="no_results">No Results Found</string>
+    <string name="adv_search_results">Search Results</string>
 
     <string name="save">Save to Watchlist</string>
     <string name="add_to_watchlist">watchlist</string>

@@ -35,7 +35,9 @@ public interface MovieApi {
                                             @Query("with_genres") String genres,
                                             @Query("vote_count.gte") int voteCount,
                                             @Query("with_keywords") String keywords,
-                                            @Query("with_cast") String cast);
+                                            @Query("with_cast") String cast,
+                                            @Query("primary_release_date.lte") String beforeDate,
+                                            @Query("primary_release_date.gte") String afterDate);
 
     @GET("genre/movie/list")
     Observable<GenreList> getGenres(@Query("api_key") String key);

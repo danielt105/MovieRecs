@@ -36,14 +36,13 @@ import rx.schedulers.Schedulers;
 public class AdvancedSearchFragment extends Fragment implements TokenCompleteTextView.TokenListener{
 
     public static final int MAX_MOVIE_RATING = 10;
-    public static final int QUERY_PARAM_COUNT = 4;
+    public static final int QUERY_PARAM_COUNT = 6;
 
-    EditText title;
     Spinner genre;
     EditText numStar;
     EditText cast;
     EditText releaseDate;
-    Spinner releaseDateRel;
+    Spinner releaseDateRel; //TODO; add this
 
     KeywordCompletionView keywords;
     ArrayAdapter<Keyword> keywordAdapter;
@@ -74,7 +73,6 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        title = (EditText) getView().findViewById(R.id.title_entry);
         genre = (Spinner) getView().findViewById(R.id.genre_entry);
         numStar = (EditText) getView().findViewById(R.id.star_entry);
         numStar.addTextChangedListener(createTextWatcher(numStar, MAX_MOVIE_RATING));
@@ -179,8 +177,8 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: sanitize input
-                sendRequest();
+                if (sanitizeInput())
+                    sendRequest();
             }
         });
 
@@ -188,7 +186,6 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
         clearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                title.setText("");
                 genre.setSelection(0);
                 numStar.setText("");
                 cast.setText("");
@@ -219,7 +216,9 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
             (genre.getSelectedItemPosition() == 0 ? "" : getGenreSelection()),
             (numStar.getText().toString().isEmpty() ? "" : numStar.getText().toString()),
             (keywords.getText().toString().isEmpty() ? "" : getKeywords()),
-            (cast.getText().toString().isEmpty() ? "" : getCast())
+            (cast.getText().toString().isEmpty() ? "" : getCast()),
+            (releaseDateRel.getSelectedItemPosition() == 1 ? releaseDate.getText().toString() : ""),
+            (releaseDateRel.getSelectedItemPosition() == 2 ? releaseDate.getText().toString() : ""),
         };
     }
 
@@ -227,9 +226,10 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
         List<Keyword> chosenKeywords = keywords.getObjects();
         String idList = "";
         for (Keyword k : chosenKeywords) {
-            idList += k.getId() + ",";
+            if (k.getId() != -1)
+                idList += k.getId() + ",";
         }
-        return idList.substring(0, idList.length() - 1);
+        return idList.length() > 0 ? idList.substring(0, idList.length() - 1) : "";
     }
 
     private String getCast() {
@@ -327,5 +327,19 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
     public void onTokenRemoved(Object token) {
 //        savedWords.remove((Keyword)token);
         Log.e("Removed Keyword: ", "" + token);
+    }
+
+    //checks input
+    private boolean sanitizeInput() {
+        String releaseDateText = releaseDate.getText().toString();
+        int releaseDateNdx = releaseDateRel.getSelectedItemPosition();
+
+        if ((releaseDateText.isEmpty() && releaseDateNdx > 0) ||
+                (!releaseDateText.isEmpty() && releaseDateNdx == 0)) {
+            releaseDate.setError(getString(R.string.release_date_error));
+            return false;
+        }
+
+        return true;
     }
 }

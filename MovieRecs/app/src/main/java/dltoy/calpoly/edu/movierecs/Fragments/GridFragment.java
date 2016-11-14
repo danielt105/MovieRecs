@@ -5,12 +5,14 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,7 @@ public class GridFragment extends Fragment {
     private MovieGridAdapter adapter;
     private int totalPages = 1;
     private SwipeRefreshLayout srf;
+    private TextView noResults;
 
     public GridFragment() {
         movies = new ArrayList<>();
@@ -77,6 +80,7 @@ public class GridFragment extends Fragment {
             spanCount = args.getInt(SPAN_COUNT);
         }
 
+        noResults = (TextView) getView().findViewById(R.id.no_results_text);
         rv = (RecyclerView) getView().findViewById(R.id.movie_grid);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rv.getContext(), spanCount,
                 isHorizontal ? GridLayoutManager.HORIZONTAL : GridLayoutManager.VERTICAL, false);
@@ -158,7 +162,9 @@ public class GridFragment extends Fragment {
                             params[0],
                             params[1].equals("") ? 0 : Integer.parseInt(params[1]),
                             params[2],
-                            params[3]));
+                            params[3],
+                            params[4],
+                            params[5]));
                 break;
         }
     }
@@ -179,11 +185,18 @@ public class GridFragment extends Fragment {
 
                     @Override
                     public void onNext(ResultList<Movie> movieList) {
-                        totalPages = movieList.totalPages;
-                        movies.addAll(movieList.results);
-                        adapter.notifyDataSetChanged();
-                        Log.e("results", totalPages + "");
-                        showLoadingIcon(false);
+                        Log.e("results size: ", movieList.totalResults + "");
+                        if (movieList.totalResults == 0) {
+                            noResults.setVisibility(View.VISIBLE);
+                            noResults.setGravity(View.TEXT_ALIGNMENT_CENTER);
+                            rv.setVisibility(View.GONE);
+                        }
+                        else {
+                            totalPages = movieList.totalPages;
+                            movies.addAll(movieList.results);
+                            adapter.notifyDataSetChanged();
+                            showLoadingIcon(false);
+                        }
                     }
                 });
     }
