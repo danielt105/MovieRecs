@@ -18,6 +18,8 @@ import com.squareup.picasso.Picasso;
 
 import dltoy.calpoly.edu.movierecs.Api.ImageUtil;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
+import dltoy.calpoly.edu.movierecs.Fragments.GridFragment;
+import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.QueryType;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -86,6 +88,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 rating.setText(ImageUtil.STAR_ICON + movie.getRating());
 
                 ((TextView) findViewById(R.id.details_desc)).setText(movie.getDescription());
+                ((TextView) findViewById(R.id.details_release)).setText(getString(R.string.release_lable) + movie.getDate());
+                ((TextView) findViewById(R.id.details_runtime)).setText("Length: " + movie.getRuntime() + " minutes");
 
                 Button btn = (Button) findViewById(R.id.details_add);
                 btn.setOnClickListener(new View.OnClickListener() {
@@ -96,8 +100,24 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     }
                 });
 
+                // set the the movie poster
                 ImageView imageView = (ImageView) findViewById(R.id.details_poster);
                 Picasso.with(MovieDetailsActivity.this).load(ImageUtil.createImageURL(movie.getImagePath(), 300)).into(imageView);
+
+                // set recommendations for the movie
+                GridFragment gf = new GridFragment();
+                Bundle bundle = new Bundle();
+
+                bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_RECS);
+                bundle.putInt(QueryType.QUERY_MOVIE_ID, movie.getId());
+                bundle.putBoolean(GridFragment.USE_HORIZONTAL, true);
+                bundle.putInt(GridFragment.SPAN_COUNT, GridFragment.DEFAULT_HORIZ_SPAN_COUNT);
+                gf.setArguments(bundle);
+
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.recommendation_container, gf)
+                        .commit();
             }
         });
     }

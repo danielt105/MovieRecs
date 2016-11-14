@@ -34,7 +34,11 @@ import rx.schedulers.Schedulers;
  */
 
 public class GridFragment extends Fragment {
-    private int spanCount = 2;
+    public static final String USE_HORIZONTAL = "USE_HORIZONTAL";
+    public static final String SPAN_COUNT = "SPAN_COUNT";
+    public static final int DEFAULT_HORIZ_SPAN_COUNT = 1;
+    public static final int DEFAULT_VERT_SPAN_COUNT = 2;
+
     private RecyclerView rv;
     private List<Movie> movies;
     private MovieGridAdapter adapter;
@@ -55,14 +59,27 @@ public class GridFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        srf = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
-        srf.setEnabled(false);
+        /*srf = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        srf.setEnabled(false);*/
         //showLoadingIcon(true);
         loadContent(getArguments(), 1);
 
-        rv = (RecyclerView) getView().findViewById(R.id.movie_grid);
+        Bundle args = getArguments();
+        boolean isHorizontal = false;
+        if (getArguments().containsKey(USE_HORIZONTAL)) {
+            isHorizontal = args.getBoolean(USE_HORIZONTAL);
+        }
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(rv.getContext(), spanCount, GridLayoutManager.VERTICAL, false);
+        adapter.setHorizontal(isHorizontal);
+
+        int spanCount = DEFAULT_VERT_SPAN_COUNT;
+        if (getArguments().containsKey(SPAN_COUNT)) {
+            spanCount = args.getInt(SPAN_COUNT);
+        }
+
+        rv = (RecyclerView) getView().findViewById(R.id.movie_grid);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(rv.getContext(), spanCount,
+                isHorizontal ? GridLayoutManager.HORIZONTAL : GridLayoutManager.VERTICAL, false);
         rv.setLayoutManager(gridLayoutManager);
         rv.setAdapter(adapter);
 
@@ -78,6 +95,7 @@ public class GridFragment extends Fragment {
         rv.addOnScrollListener(endlessScroll);
 
         // set the margins on each grid item
+        final boolean isH = isHorizontal;
         rv.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
@@ -85,24 +103,30 @@ public class GridFragment extends Fragment {
                 int edgeMargin = 16;
                 int innerMargin = edgeMargin / 2;
 
-                if (pos % 2 == 0) {
-                    outRect.left = edgeMargin;
+
+                if (isH) {
+                    outRect.left = 0;
                     outRect.right = innerMargin;
                 } else {
-                    outRect.right = edgeMargin;
-                    outRect.left = innerMargin;
-                }
+                    if (pos % 2 == 0) {
+                        outRect.left = edgeMargin;
+                        outRect.right = innerMargin;
+                    } else {
+                        outRect.right = edgeMargin;
+                        outRect.left = innerMargin;
+                    }
 
-                // check for the very top row or very bottom row which are edges
-                if (pos == 0 || pos == 1) {
-                    outRect.top = edgeMargin;
-                    outRect.bottom = innerMargin;
-                } else if (pos == movies.size() - 1 || pos == movies.size() - 2) {
-                    outRect.bottom = edgeMargin;
-                    outRect.top = innerMargin;
-                } else {
-                    outRect.top = innerMargin;
-                    outRect.bottom = innerMargin;
+                    // check for the very top row or very bottom row which are edges
+                    if (pos == 0 || pos == 1) {
+                        outRect.top = edgeMargin;
+                        outRect.bottom = innerMargin;
+                    } else if (pos == movies.size() - 1 || pos == movies.size() - 2) {
+                        outRect.bottom = edgeMargin;
+                        outRect.top = innerMargin;
+                    } else {
+                        outRect.top = innerMargin;
+                        outRect.bottom = innerMargin;
+                    }
                 }
             }
         });
@@ -171,6 +195,6 @@ public class GridFragment extends Fragment {
     }
 
     public void showLoadingIcon(boolean show) {
-        srf.setRefreshing(show);
+        //srf.setRefreshing(show);
     }
 }

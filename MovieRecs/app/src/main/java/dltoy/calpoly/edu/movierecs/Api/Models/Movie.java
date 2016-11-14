@@ -2,12 +2,20 @@ package dltoy.calpoly.edu.movierecs.Api.Models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class Movie {
     private @SerializedName("id") int id;
     private @SerializedName("title") String title;
     private @SerializedName("poster_path") String imagePath;
     private @SerializedName("overview") String description;
     private @SerializedName("vote_average") float rating;
+    private @SerializedName("release_date") String date;
+    private @SerializedName("runtime") int runtime;
+
     private int dbid;
     private boolean isWatched;
 
@@ -61,5 +69,24 @@ public class Movie {
 
     public float getRating() {
         return rating;
+    }
+
+    public String getDate() {
+        SimpleDateFormat original = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        SimpleDateFormat better = new SimpleDateFormat("MM-dd-yyyy", Locale.US);
+        Date done;
+        try {
+            done = original.parse(date);
+        } catch (ParseException stupid) {
+            // dumb
+            done = new Date();
+            stupid.printStackTrace();
+        }
+
+        return better.format(done);
+    }
+
+    public int getRuntime() {
+        return runtime;
     }
 }
