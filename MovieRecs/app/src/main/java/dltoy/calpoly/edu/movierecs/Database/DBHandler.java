@@ -57,6 +57,9 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public void addMovie(Movie movie) {
+        if (containsMovie(movie))
+            return;
+
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -85,6 +88,16 @@ public class DBHandler extends SQLiteOpenHelper {
         movie.setImagePath(cursor.getString(3));
         movie.setWatched(Integer.parseInt(cursor.getString(4)) > 0);
         return movie;
+    }
+
+    public boolean containsMovie(Movie m) {
+        String selectQuery = "SELECT * FROM " + TABLE_MOVIES +
+                " WHERE " + KEY_MOVIE_ID + " == " + m.getId();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        return cursor.moveToFirst();
     }
 
     public List<Movie> getWatchlist(int notWatched) {
