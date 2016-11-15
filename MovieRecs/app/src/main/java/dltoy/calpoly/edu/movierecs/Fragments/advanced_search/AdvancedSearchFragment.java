@@ -33,7 +33,7 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class AdvancedSearchFragment extends Fragment implements TokenCompleteTextView.TokenListener{
+public class AdvancedSearchFragment extends Fragment /*implements TokenCompleteTextView.TokenListener*/{
 
     public static final int MAX_MOVIE_RATING = 10;
     public static final int QUERY_PARAM_COUNT = 6;
@@ -56,12 +56,8 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
     Button clearButton;
 
     private ArrayAdapter<String> genreAdapter;
-    private ArrayList<String> genreList;
+    private ArrayList<String> genreTextList;
     private ArrayList<Genre> genres;
-
-    public AdvancedSearchFragment() {
-        getGenres();
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -82,7 +78,7 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
         keywords = (KeywordCompletionView) getView().findViewById(R.id.keyword_entry);
         keywords.setTextColor(ContextCompat.getColorStateList(getContext(),
                 ((MainActivity)getActivity()).getTextColor()));
-        keywords.setTokenListener(this);
+//        keywords.setTokenListener(this);
         keywords.setTokenClickStyle(TokenCompleteTextView.TokenClickStyle.Delete);
         setKeywordAdapter();
         keywords.addTextChangedListener(new TextWatcher() {
@@ -127,7 +123,7 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
         persons = (PersonCompletionView) getView().findViewById(R.id.cast_entry);
         persons.setTextColor(ContextCompat.getColorStateList(getContext(),
                 ((MainActivity)getActivity()).getTextColor()));
-        persons.setTokenListener(this);
+//        persons.setTokenListener(this);
         persons.setTokenClickStyle(TokenCompleteTextView.TokenClickStyle.Delete);
         setPersonAdapter();
         persons.addTextChangedListener(new TextWatcher() {
@@ -143,7 +139,6 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
 
             @Override
             public void afterTextChanged(Editable s) {
-                Log.e("sending requiest", "for " + s.toString());
                 MainActivity.apiService.searchPerson(BuildConfig.apiKey, s.toString())
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -194,6 +189,15 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
                 keywords.clear();
             }
         });
+
+        //load genres
+        getGenres();
+
+        //returning from previous search
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            restoreSearch(bundle);
+        }
     }
 
     //This is a workaround to notifyDataSetChanged not working...
@@ -208,7 +212,8 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
     }
 
     private void sendRequest() {
-        ((MainActivity)getActivity()).sendSearch(getQueryParams());
+        ((MainActivity)getActivity()).sendSearch(getQueryParams(),
+                (ArrayList<Keyword>)keywords.getObjects(), (ArrayList<Person>)persons.getObjects());
     }
 
     private String[] getQueryParams() {
@@ -221,6 +226,15 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
             (releaseDateRel.getSelectedItemPosition() == 2 ? releaseDate.getText().toString() : ""),
         };
     }
+
+//    private String parseAdvSearchToken(List<TokenData> data) {
+//        String idList = "";
+//        for (TokenData td : data) {
+//            if (td.getId() != -1)
+//                idList += td.getId() + ",";
+//        }
+//        return idList.length() > 0 ? idList.substring(0, idList.length() - 1) : "";
+//    }
 
     private String getKeywords() {
         List<Keyword> chosenKeywords = keywords.getObjects();
@@ -237,20 +251,19 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
         String idList = "";
         for (Person p : chosenPpl)
             idList += p.getId() + ",";
-        return idList.substring(0, idList.length() - 1);
+        return idList.length() > 0 ? idList.substring(0, idList.length() - 1) : "";
     }
 
     private void getGenres() {
         genres = (ArrayList<Genre>) MainActivity.db.getGenres();
         if (genres.size() == 0) {
+            Log.e("making a api req", "sad face");
             MainActivity.apiService.getGenres(BuildConfig.apiKey)
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<GenreList>() {
                         @Override
-                        public void onCompleted() {
-
-                        }
+                        public void onCompleted() { }
 
                         @Override
                         public void onError(Throwable e) {
@@ -270,13 +283,16 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
     }
 
     private void populateGenreList() {
-        genreList = new ArrayList<>();
-        genreList.add(getResources().getString(R.string.genre_hint));
+        Log.e("genres size is pop", genres.size() + " ");
+
+        genreTextList = new ArrayList<>();
+        genreTextList.add(getResources().getString(R.string.genre_hint));
         for (Genre g : genres) {
-            genreList.add(g.getName());
+            genreTextList.add(g.getName());
+            MainActivity.db.addGenre(g);
         }
 
-        genreAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, genreList);
+        genreAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, genreTextList);
         genre.setAdapter(genreAdapter);
     }
 
@@ -293,14 +309,10 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
     private TextWatcher createTextWatcher(final EditText component, final int maxDate) {
         return new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -316,18 +328,18 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
         };
     }
 
-    //TODO: remove these
-    @Override
-    public void onTokenAdded(Object token) {
-//        savedWords.add((Keyword)token);
-        Log.e("Added Keyword: ", token.toString());
-    }
-
-    @Override
-    public void onTokenRemoved(Object token) {
-//        savedWords.remove((Keyword)token);
-        Log.e("Removed Keyword: ", "" + token);
-    }
+//    //TODO: remove these
+//    @Override
+//    public void onTokenAdded(Object token) {
+////        savedWords.add((Keyword)token);
+//        Log.e("Added Keyword: ", token.toString());
+//    }
+//
+//    @Override
+//    public void onTokenRemoved(Object token) {
+////        savedWords.remove((Keyword)token);
+//        Log.e("Removed Keyword: ", "" + token);
+//    }
 
     //checks input
     private boolean sanitizeInput() {
@@ -341,5 +353,40 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
         }
 
         return true;
+    }
+
+    private void restoreSearch(Bundle savedData) {
+        String[] data = savedData.getStringArray(MainActivity.SAVED_SEARCH);
+
+        for (String s : data) {
+            Log.e("in fragment ", "is " + s);
+        }
+
+        if (!data[0].isEmpty()) {
+            int target = Integer.parseInt(data[0]);
+            for (int iter = 0; iter < genres.size(); iter++) {
+                if (genres.get(iter).getId() == target) {
+                    genre.setSelection(iter + 1); //first index is "pick"
+                    break;
+                }
+            }
+        }
+        numStar.setText(data[1]);
+
+        ArrayList<Keyword> kList = savedData.getParcelableArrayList(MainActivity.KEYWORD_SEARCH);
+        for (Keyword k : kList)
+            keywords.addObject(k);
+        ArrayList<Person> pList = savedData.getParcelableArrayList(MainActivity.CAST_SEARCH);
+        for (Person p : pList)
+            persons.addObject(p);
+
+        if (!data[2].isEmpty()) {
+            releaseDate.setText(data[2]);
+            releaseDateRel.setSelection(1);
+        }
+        else if (!data[3].isEmpty()) {
+            releaseDate.setText(data[2]);
+            releaseDateRel.setSelection(2);
+        }
     }
 }

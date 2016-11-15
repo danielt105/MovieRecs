@@ -31,6 +31,7 @@
     <string name="clear">Clear</string>
     <string name="no_results">No Results Found</string>
     <string name="adv_search_results">Search Results</string>
+    <string name="revise_search">Revise search parameters</string>
 
     <string name="save">Save to Watchlist</string>
     <string name="add_to_watchlist">watchlist</string>

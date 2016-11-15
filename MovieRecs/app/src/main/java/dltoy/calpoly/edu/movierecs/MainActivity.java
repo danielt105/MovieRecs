@@ -20,9 +20,15 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.mauker.materialsearchview.MaterialSearchView;
+import dltoy.calpoly.edu.movierecs.Api.Models.Keyword;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
+import dltoy.calpoly.edu.movierecs.Api.Models.Person;
 import dltoy.calpoly.edu.movierecs.Api.Models.ResultList;
+import dltoy.calpoly.edu.movierecs.Api.Models.TokenData;
 import dltoy.calpoly.edu.movierecs.Api.MovieApi;
 import dltoy.calpoly.edu.movierecs.Api.MovieClient;
 import dltoy.calpoly.edu.movierecs.Database.DBHandler;
@@ -48,6 +54,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static final String CUR_FRAG_KEY = "current_fragment";
     private int curFragId;
     private SharedPreferences pref;
+
+    public static final String KEYWORD_SEARCH = "keywordzzz";
+    public static final String CAST_SEARCH = "casts";
+    public static final String SAVED_SEARCH = "saving stuffs";
+    private ArrayList<Keyword> advSearchKeywords;
+    private ArrayList<Person> advSearchCast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,15 +88,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         curFragId = savedInstanceState == null ? -1 : savedInstanceState.getInt(CUR_FRAG_KEY);
         switchToFragment(curFragId == -1 ? R.id.home : curFragId);
-    }
-
-    public void sendSearch(String[] query) {
-        GridFragment gf = new GridFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_ADV_SEARCH);
-        bundle.putStringArray(QueryType.QUERY_ADV_SEARCH_DATA, query);
-        gf.setArguments(bundle);
-        loadFragment(R.string.adv_search_results, R.id.movie_grid, gf);
     }
 
     //Switches the fragment in the activity
@@ -334,5 +337,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (resultCode == PREV_FRAG) {
             curFragId = data.getIntExtra(CUR_FRAG_KEY, R.id.home);
         }
+    }
+
+    public void sendSearch(String[] query, ArrayList<Keyword> keywords, ArrayList<Person> cast) {
+        advSearchKeywords = keywords;
+        advSearchCast = cast;
+        GridFragment gf = new GridFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_ADV_SEARCH);
+        bundle.putStringArray(QueryType.QUERY_ADV_SEARCH_DATA, query);
+        gf.setArguments(bundle);
+        loadFragment(R.string.adv_search_results, R.id.movie_grid, gf);
+    }
+
+    public void restoreSearch(String[] fields) {
+        Log.e("size is", fields.length + "");
+        for (String s : fields) {
+            Log.e("in main activity ", "is " + s);
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(KEYWORD_SEARCH, advSearchKeywords);
+        bundle.putParcelableArrayList(CAST_SEARCH, advSearchCast);
+        bundle.putStringArray(SAVED_SEARCH, fields);
+        AdvancedSearchFragment adf = new AdvancedSearchFragment();
+        adf.setArguments(bundle);
+        loadFragment(R.string.adv_search, R.id.advSearch, adf);
     }
 }
