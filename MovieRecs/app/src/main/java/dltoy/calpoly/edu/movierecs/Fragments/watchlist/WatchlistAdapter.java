@@ -62,6 +62,8 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
 
         private Context context;
         private TextView title;
+        private TextView rating;
+        private TextView desc;
         private CheckBox switchList;
         private ImageView img;
         public Movie movie;
@@ -72,6 +74,8 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
             itemView.setOnLongClickListener(this);
             context = itemView.getContext();
             title = (TextView) itemView.findViewById(R.id.watchlist_entry_title);
+            rating = (TextView) itemView.findViewById(R.id.watchlist_entry_rating);
+            desc = (TextView) itemView.findViewById(R.id.watchlist_entry_description);
             img = (ImageView) itemView.findViewById(R.id.watchlist_image);
             switchList = (CheckBox) itemView.findViewById(R.id.watchlist_entry_checkbox);
             switchList.setOnCheckedChangeListener(this);
@@ -81,6 +85,8 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
         public void bind(Movie m) {
             movie = m;
             title.setText(m.getTitle());
+            rating.setText(m.getRating() + "");
+            desc.setText(m.getDescription() + "THIS IS A REAALLY REALLY LONG DESCRIPTION THIS ALSO CONTAINS SOMME SWEET FILLER TEXT AN HA :F KD");
             cheat = false;
             switchList.setChecked(m.isWatched());
             cheat = true;

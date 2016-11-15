@@ -23,6 +23,8 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String KEY_TITLE = "title";
     private static final String KEY_IMG = "image";
     private static final String KEY_WATCHED = "isWatched";
+    private static final String KEY_RATING = "rating";
+    private static final String KEY_DESC = "description";
 
     //genre db
     private static final String TABLE_GENERES = "genres";
@@ -40,7 +42,9 @@ public class DBHandler extends SQLiteOpenHelper {
                 KEY_MOVIE_ID + " INTEGER," +
                 KEY_TITLE + " TEXT," +
                 KEY_IMG + " TEXT," +
-                KEY_WATCHED + " INTEGER" + ")";
+                KEY_WATCHED + " INTEGER," +
+                KEY_RATING + " TEXT," +
+                KEY_DESC + " TEXT" + ")";
         db.execSQL(CREATE_MOVIE_TABLE);
 
         String CREATE_GENRE_TABLE = "CREATE TABLE " + TABLE_GENERES + "(" +
@@ -67,6 +71,8 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(KEY_TITLE, movie.getTitle());
         values.put(KEY_IMG, movie.getImagePath());
         values.put(KEY_WATCHED, 0);
+        values.put(KEY_RATING, movie.getRating() + "");
+        values.put(KEY_DESC, movie.getDescription());
 
         db.insert(TABLE_MOVIES, null, values);
         db.close();
@@ -87,6 +93,8 @@ public class DBHandler extends SQLiteOpenHelper {
         movie.setTitle(cursor.getString(2));
         movie.setImagePath(cursor.getString(3));
         movie.setWatched(Integer.parseInt(cursor.getString(4)) > 0);
+        movie.setRating(Float.parseFloat(cursor.getString(5)));
+        movie.setDescription(cursor.getString(6));
         return movie;
     }
 
@@ -116,6 +124,8 @@ public class DBHandler extends SQLiteOpenHelper {
                 movie.setTitle(cursor.getString(2));
                 movie.setImagePath(cursor.getString(3));
                 movie.setWatched(Integer.parseInt(cursor.getString(4)) > 0);
+                movie.setRating(Float.parseFloat(cursor.getString(5)));
+                movie.setDescription(cursor.getString(6));
 
                 watchlist.add(movie);
             } while (cursor.moveToNext());
@@ -132,6 +142,8 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(KEY_TITLE, movie.getTitle());
         values.put(KEY_IMG, movie.getImagePath());
         values.put(KEY_WATCHED, movie.isWatched());
+        values.put(KEY_RATING, movie.getRating());
+        values.put(KEY_DESC, movie.getDescription());
 
         return db.update(TABLE_MOVIES, values, KEY_ID + " = ?",
                 new String[] { String.valueOf(movie.getDbid()) });

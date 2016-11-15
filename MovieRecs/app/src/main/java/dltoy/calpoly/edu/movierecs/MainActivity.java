@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.watchlist:
                 curFragId = navId;
                 if (temp == null || !(temp instanceof WatchlistFragment)) {
-                    loadFragment(R.string.watchlist, R.id.watchlist, new WatchlistFragment());
+                    loadFragment(R.string.not_watched_list, R.id.watchlist, new WatchlistFragment());
                 }
                 break;
             case R.id.settings:

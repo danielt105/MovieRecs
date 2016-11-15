@@ -3,6 +3,7 @@ package dltoy.calpoly.edu.movierecs.Fragments.watchlist;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -34,7 +35,6 @@ public class WatchlistFragment extends Fragment  {
         super.onCreateView(inflater, container, savedInstanceState);
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.watchlist, container, false);
-//        return inflater.inflate(R.layout.watchlist_tabs, container, false);
     }
 
     @Override
@@ -52,10 +52,13 @@ public class WatchlistFragment extends Fragment  {
 
         curList = new ArrayList<>();
         adapter = new WatchlistAdapter(getContext(), curList);
-        modeWatched = 1;
+        modeWatched = -1; //default to notwatched
         list = (RecyclerView)getView().findViewById(R.id.the_list);
         list.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         list.setAdapter(adapter);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(list.getContext(), DividerItemDecoration.VERTICAL);
+        list.addItemDecoration(dividerItemDecoration);
 
         setList();
     }

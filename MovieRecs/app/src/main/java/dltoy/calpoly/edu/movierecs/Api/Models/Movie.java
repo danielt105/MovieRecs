@@ -71,6 +71,10 @@ public class Movie {
         return rating;
     }
 
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
     public String getDate() {
         SimpleDateFormat original = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         SimpleDateFormat better = new SimpleDateFormat("MM-dd-yyyy", Locale.US);

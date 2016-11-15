@@ -5,24 +5,35 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
     <ImageView
-        android:layout_width="100dp"
+        android:layout_width="0dp"
         android:layout_height="100dp"
+        android:layout_weight=".25"
         android:id="@+id/watchlist_image"/>
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight=".65"
         android:orientation="vertical">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/watchlist_entry_title"/>
-        <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/switch_list"/>-->
-        <CheckBox
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/watchlist_entry_checkbox"/>
+            android:id="@+id/watchlist_entry_rating"/>
+        <TextView
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/watchlist_entry_description"
+            android:ellipsize="end"
+            android:maxLines="2"/>
     </LinearLayout>
+    <CheckBox
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight=".1"
+        android:layout_gravity="right"
+        android:id="@+id/watchlist_entry_checkbox"/>
 </LinearLayout>

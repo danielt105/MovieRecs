@@ -42,7 +42,7 @@ public class AdvancedSearchFragment extends Fragment implements TokenCompleteTex
     EditText numStar;
     EditText cast;
     EditText releaseDate;
-    Spinner releaseDateRel; //TODO; add this
+    Spinner releaseDateRel;
 
     KeywordCompletionView keywords;
     ArrayAdapter<Keyword> keywordAdapter;
