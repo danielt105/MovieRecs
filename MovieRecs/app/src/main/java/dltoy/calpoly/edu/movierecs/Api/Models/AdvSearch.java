@@ -2,8 +2,11 @@ package dltoy.calpoly.edu.movierecs.Api.Models;
 
 import java.util.ArrayList;
 
-public class AdvSearch {
 
+/*
+ * This class is a only used to save data to restore during advanced searches
+ */
+public class AdvSearch {
     public String[] query;
     public ArrayList<Keyword> keywords;
     public ArrayList<Person> cast;

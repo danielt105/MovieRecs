@@ -20,23 +20,20 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import br.com.mauker.materialsearchview.MaterialSearchView;
 import dltoy.calpoly.edu.movierecs.Api.Models.AdvSearch;
-import dltoy.calpoly.edu.movierecs.Api.Models.Keyword;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
-import dltoy.calpoly.edu.movierecs.Api.Models.Person;
 import dltoy.calpoly.edu.movierecs.Api.Models.ResultList;
-import dltoy.calpoly.edu.movierecs.Api.Models.TokenData;
 import dltoy.calpoly.edu.movierecs.Api.MovieApi;
 import dltoy.calpoly.edu.movierecs.Api.MovieClient;
 import dltoy.calpoly.edu.movierecs.Database.DBHandler;
+import dltoy.calpoly.edu.movierecs.Fragments.AdvancedSearchResults;
 import dltoy.calpoly.edu.movierecs.Fragments.advanced_search.AdvancedSearchFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.GridFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.SettingsFragment;
-import dltoy.calpoly.edu.movierecs.Fragments.watchlist.WatchlistFragment;
+import dltoy.calpoly.edu.movierecs.Fragments.watchlist.NotWatchedFragment;
+import dltoy.calpoly.edu.movierecs.Fragments.watchlist.WatchedFragment;
+import dltoy.calpoly.edu.movierecs.Fragments.watchlist.WatchlistBaseFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.QueryType;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -108,8 +105,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.watchlist:
                 curFragId = navId;
-                if (temp == null || !(temp instanceof WatchlistFragment)) {
-                    loadFragment(R.string.not_watched_list, R.id.watchlist, new WatchlistFragment());
+                if (temp == null || !(temp instanceof WatchedFragment)) {
+                    loadFragment(R.string.watchlist_title, R.id.watchlist, new WatchedFragment());
+                }
+                break;
+            case R.id.not_watchedlist:
+                curFragId = navId;
+                if (temp == null || !(temp instanceof NotWatchedFragment)) {
+                    loadFragment(R.string.not_watchlist_title, R.id.not_watchedlist, new NotWatchedFragment());
                 }
                 break;
             case R.id.settings:
@@ -250,20 +253,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.action_search:
                 ((MaterialSearchView) findViewById(R.id.search_view)).openSearch();
                 break;
-            case R.id.filter:
-                filterOption();
-                break;
             default:
                 Log.e("Actionbar menu"," Invalid item selected");
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void filterOption() {
-        if (sentSearch) {
-            restoreSearch();
-        }
     }
 
     private void setupTheme() {
@@ -349,7 +343,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void sendSearch(AdvSearch search) {
         savedSearch = search;
         sentSearch = true;
-        GridFragment gf = new GridFragment();
+        AdvancedSearchResults gf = new AdvancedSearchResults();
         Bundle bundle = new Bundle();
         bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_ADV_SEARCH);
         bundle.putStringArray(QueryType.QUERY_ADV_SEARCH_DATA, search.query);
@@ -358,13 +352,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void restoreSearch() {
-        sentSearch = false;
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(Constants.KEYWORD_SEARCH, savedSearch.keywords);
-        bundle.putParcelableArrayList(Constants.CAST_SEARCH, savedSearch.cast);
-        bundle.putStringArray(Constants.SAVED_SEARCH, savedSearch.query);
-        AdvancedSearchFragment adf = new AdvancedSearchFragment();
-        adf.setArguments(bundle);
-        loadFragment(R.string.adv_search, R.id.advSearch, adf);
+        if (sentSearch) {
+            sentSearch = false;
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList(Constants.KEYWORD_SEARCH, savedSearch.keywords);
+            bundle.putParcelableArrayList(Constants.CAST_SEARCH, savedSearch.cast);
+            bundle.putStringArray(Constants.SAVED_SEARCH, savedSearch.query);
+            AdvancedSearchFragment adf = new AdvancedSearchFragment();
+            adf.setArguments(bundle);
+            loadFragment(R.string.adv_search, R.id.advSearch, adf);
+        }
     }
 }

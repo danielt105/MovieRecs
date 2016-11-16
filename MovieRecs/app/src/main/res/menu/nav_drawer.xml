@@ -7,9 +7,14 @@
         <item
             android:id="@+id/advSearch"
             android:title="@string/adv_search"/>
+    </group>
+    <group android:checkableBehavior="single" android:id="@+id/watchlist_ops">
         <item
             android:id="@+id/watchlist"
             android:title="@string/watchlist"/>
+        <item
+            android:id="@+id/not_watchedlist"
+            android:title="@string/not_watchlist"/>
     </group>
     <group android:checkableBehavior="single" android:id="@+id/settings_options">
         <item

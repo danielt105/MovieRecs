@@ -10,6 +10,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -43,12 +44,12 @@ public class GridFragment extends Fragment {
     public static final int DEFAULT_HORIZ_SPAN_COUNT = 1;
     public static final int DEFAULT_VERT_SPAN_COUNT = 2;
 
-    private RecyclerView rv;
-    private List<Movie> movies;
-    private MovieGridAdapter adapter;
-    private int totalPages = 1;
-    private SwipeRefreshLayout srf;
-    private TextView noResults;
+    protected RecyclerView rv;
+    protected List<Movie> movies;
+    protected MovieGridAdapter adapter;
+    protected int totalPages = 1;
+    protected SwipeRefreshLayout srf;
+    protected TextView noResults;
 
     public GridFragment() {
         movies = new ArrayList<>();
@@ -139,7 +140,7 @@ public class GridFragment extends Fragment {
         });
     }
 
-    private void loadContent(Bundle bundle, int page) {
+    protected void loadContent(Bundle bundle, int page) {
         int type = (int) bundle.get(QueryType.QUERY_TYPE);
 
         switch (type) {
@@ -172,7 +173,7 @@ public class GridFragment extends Fragment {
         }
     }
 
-    private void setUpRequest(Observable<ResultList<Movie>> obs) {
+    protected void setUpRequest(Observable<ResultList<Movie>> obs) {
         obs.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ResultList<Movie>>() {

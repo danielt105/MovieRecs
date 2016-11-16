@@ -2,11 +2,14 @@
     <string name="app_name">MovieRecs</string>
 
     <string name="filter">Filter</string>
+    <string name="top_rated">Top Rated</string>
+    <string name="latest">Latest</string>
 
     <!--nav drawer-->
     <string name="home">Home</string>
     <string name="adv_search">Advanced Search</string>
-    <string name="watchlist">Watchlist</string>
+    <string name="watchlist">Watched list</string>
+    <string name="not_watchlist">Not Watched list</string>
     <string name="open_drawer">Open navigation drawer</string>
     <string name="close_drawer">Close navigation drawer</string>
 
@@ -44,11 +47,8 @@
     <string name="alert_dialog_text">Are you sure you want to remove</string>
     <string name="remove">Remove</string>
     <string name="cancel">Cancel</string>
-    <string-array name="watchlist_titles">
-        <item>Not Watched List</item>
-        <item>Both Lists</item>
-        <item>Watched List</item>
-    </string-array>
+    <string name="watchlist_title">Watched List</string>
+    <string name="not_watchlist_title">Not Watched List</string>
     <string name="watched_list">Watched List</string>
     <string name="not_watched_list">Not Watched List</string>
     <string name="both_lists">Both Lists</string>

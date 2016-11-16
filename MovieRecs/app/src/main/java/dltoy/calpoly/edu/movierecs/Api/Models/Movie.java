@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 
@@ -88,6 +89,14 @@ public class Movie {
         }
 
         return better.format(done);
+    }
+
+    public String getRawDate() {
+        return date;
+    }
+
+    public void setRawDate(String newDate) {
+        this.date = newDate;
     }
 
     public int getRuntime() {
