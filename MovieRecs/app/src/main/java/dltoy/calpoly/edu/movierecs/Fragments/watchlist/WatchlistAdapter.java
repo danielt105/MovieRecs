@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 import dltoy.calpoly.edu.movierecs.Api.ImageUtil;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
+import dltoy.calpoly.edu.movierecs.Constants;
 import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.MovieDetailsActivity;
 import dltoy.calpoly.edu.movierecs.R;
@@ -58,8 +59,6 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
     public class WatchlistViewHolder extends RecyclerView.ViewHolder implements
             View.OnClickListener, CompoundButton.OnCheckedChangeListener, View.OnLongClickListener {
 
-        public static final int DEFAULT_IMG_WID = 300;
-
         private Context context;
         private TextView title;
         private TextView rating;
@@ -86,19 +85,19 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
             movie = m;
             title.setText(m.getTitle());
             rating.setText(m.getRating() + "");
-            desc.setText(m.getDescription() + "THIS IS A REAALLY REALLY LONG DESCRIPTION THIS ALSO CONTAINS SOMME SWEET FILLER TEXT AN HA :F KD");
+            desc.setText(m.getDescription());
             cheat = false;
             switchList.setChecked(m.isWatched());
             cheat = true;
-            ImageUtil.insertImage(m.getImagePath(), DEFAULT_IMG_WID, img);
+            ImageUtil.insertImage(m.getImagePath(), Constants.DEFAULT_IMG_WID, img);
         }
 
         @Override
         public void onClick(View v) {
             Intent details = new Intent(v.getContext(), MovieDetailsActivity.class);
             details.putExtra(MovieDetailsActivity.MOVIE_ID_EXTRA, movie.getId());
-            details.putExtra(MainActivity.CUR_FRAG_KEY, R.id.watchlist);
-            ((Activity)context).startActivityForResult(details, MainActivity.PREV_FRAG_KEY);
+            details.putExtra(Constants.CUR_FRAG_KEY, R.id.watchlist);
+            ((Activity)context).startActivityForResult(details, Constants.PREV_FRAG_KEY);
         }
 
         @Override

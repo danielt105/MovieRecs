@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.mauker.materialsearchview.MaterialSearchView;
+import dltoy.calpoly.edu.movierecs.Api.Models.AdvSearch;
 import dltoy.calpoly.edu.movierecs.Api.Models.Keyword;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 import dltoy.calpoly.edu.movierecs.Api.Models.Person;
@@ -43,23 +44,16 @@ import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static final String THEME_KEY = "current theme :D";
     private NavigationView navView;
     private Toolbar toolbar;
     public static MovieApi apiService;
     public static DBHandler db;
 
-    public static final int PREV_FRAG_KEY = 1;
-    public static final int PREV_FRAG = 2;
-    public static final String CUR_FRAG_KEY = "current_fragment";
     private int curFragId;
     private SharedPreferences pref;
 
-    public static final String KEYWORD_SEARCH = "keywordzzz";
-    public static final String CAST_SEARCH = "casts";
-    public static final String SAVED_SEARCH = "saving stuffs";
-    private ArrayList<Keyword> advSearchKeywords;
-    private ArrayList<Person> advSearchCast;
+    private AdvSearch savedSearch;
+    private boolean sentSearch = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         apiService = MovieClient.getClient().create(MovieApi.class);
         db = new DBHandler(this);
 
-        curFragId = savedInstanceState == null ? -1 : savedInstanceState.getInt(CUR_FRAG_KEY);
+        curFragId = savedInstanceState == null ? -1 : savedInstanceState.getInt(Constants.CUR_FRAG_KEY);
         switchToFragment(curFragId == -1 ? R.id.home : curFragId);
     }
 
@@ -138,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(CUR_FRAG_KEY, curFragId);
+        outState.putInt(Constants.CUR_FRAG_KEY, curFragId);
     }
 
     @Override
@@ -252,14 +246,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_search) {
-            ((MaterialSearchView) findViewById(R.id.search_view)).openSearch();
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                ((MaterialSearchView) findViewById(R.id.search_view)).openSearch();
+                break;
+            case R.id.filter:
+                filterOption();
+                break;
+            default:
+                Log.e("Actionbar menu"," Invalid item selected");
         }
+
         return super.onOptionsItemSelected(item);
     }
 
+    private void filterOption() {
+        if (sentSearch) {
+            restoreSearch();
+        }
+    }
+
     private void setupTheme() {
-        int curTheme = pref.getInt(THEME_KEY, 0);
+        int curTheme = pref.getInt(Constants.THEME_KEY, 0);
         switch (curTheme) {
             case 2:
                 setTheme(R.style.ReturnOfCruGold);
@@ -299,7 +307,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public int getTextColor() {
-        int curTheme = pref.getInt(THEME_KEY, 0);
+        int curTheme = pref.getInt(Constants.THEME_KEY, 0);
         int color;
         switch (curTheme) {
             case 2:
@@ -333,33 +341,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.e("this was called", "activity result");
-        if (resultCode == PREV_FRAG) {
-            curFragId = data.getIntExtra(CUR_FRAG_KEY, R.id.home);
+        if (resultCode == Constants.PREV_FRAG) {
+            curFragId = data.getIntExtra(Constants.CUR_FRAG_KEY, R.id.home);
         }
     }
 
-    public void sendSearch(String[] query, ArrayList<Keyword> keywords, ArrayList<Person> cast) {
-        advSearchKeywords = keywords;
-        advSearchCast = cast;
+    public void sendSearch(AdvSearch search) {
+        savedSearch = search;
+        sentSearch = true;
         GridFragment gf = new GridFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_ADV_SEARCH);
-        bundle.putStringArray(QueryType.QUERY_ADV_SEARCH_DATA, query);
+        bundle.putStringArray(QueryType.QUERY_ADV_SEARCH_DATA, search.query);
         gf.setArguments(bundle);
         loadFragment(R.string.adv_search_results, R.id.movie_grid, gf);
     }
 
-    public void restoreSearch(String[] fields) {
-        Log.e("size is", fields.length + "");
-        for (String s : fields) {
-            Log.e("in main activity ", "is " + s);
-        }
-
+    public void restoreSearch() {
+        sentSearch = false;
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(KEYWORD_SEARCH, advSearchKeywords);
-        bundle.putParcelableArrayList(CAST_SEARCH, advSearchCast);
-        bundle.putStringArray(SAVED_SEARCH, fields);
+        bundle.putParcelableArrayList(Constants.KEYWORD_SEARCH, savedSearch.keywords);
+        bundle.putParcelableArrayList(Constants.CAST_SEARCH, savedSearch.cast);
+        bundle.putStringArray(Constants.SAVED_SEARCH, savedSearch.query);
         AdvancedSearchFragment adf = new AdvancedSearchFragment();
         adf.setArguments(bundle);
         loadFragment(R.string.adv_search, R.id.advSearch, adf);

@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">MovieRecs</string>
 
+    <string name="filter">Filter</string>
+
     <!--nav drawer-->
     <string name="home">Home</string>
     <string name="adv_search">Advanced Search</string>

@@ -40,7 +40,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         int id = getIntent().getIntExtra(MOVIE_ID_EXTRA, 0);
         getMovieData(id);
 
-        fragToReturnTo = getIntent().getIntExtra(MainActivity.CUR_FRAG_KEY, R.id.home);
+        fragToReturnTo = getIntent().getIntExtra(Constants.CUR_FRAG_KEY, R.id.home);
         Log.e("got", fragToReturnTo + "");
     }
 
@@ -49,9 +49,9 @@ public class MovieDetailsActivity extends AppCompatActivity {
         super.onDestroy();
         Log.e("setting", "intent " + fragToReturnTo);
         Intent intent = new Intent();
-        intent.putExtra(MainActivity.CUR_FRAG_KEY, fragToReturnTo);
-        setResult(MainActivity.PREV_FRAG, intent);
-        finishActivity(MainActivity.PREV_FRAG_KEY);
+        intent.putExtra(Constants.CUR_FRAG_KEY, fragToReturnTo);
+        setResult(Constants.PREV_FRAG, intent);
+        finishActivity(Constants.PREV_FRAG_KEY);
     }
 
     private void getMovieData(int id) {
@@ -123,7 +123,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     private void setupTheme() {
-        int curTheme = PreferenceManager.getDefaultSharedPreferences(this).getInt(MainActivity.THEME_KEY, 0);
+        int curTheme = PreferenceManager.getDefaultSharedPreferences(this).getInt(Constants.THEME_KEY, 0);
         switch (curTheme) {
             case 2:
                 setTheme(R.style.ReturnOfCruGold);

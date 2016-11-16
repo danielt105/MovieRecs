@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -21,12 +22,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import dltoy.calpoly.edu.movierecs.Api.Models.AdvSearch;
 import dltoy.calpoly.edu.movierecs.Api.Models.Genre;
 import dltoy.calpoly.edu.movierecs.Api.Models.GenreList;
 import dltoy.calpoly.edu.movierecs.Api.Models.Keyword;
 import dltoy.calpoly.edu.movierecs.Api.Models.Person;
 import dltoy.calpoly.edu.movierecs.Api.Models.ResultList;
 import dltoy.calpoly.edu.movierecs.BuildConfig;
+import dltoy.calpoly.edu.movierecs.Constants;
 import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.R;
 import rx.Observer;
@@ -34,9 +37,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class AdvancedSearchFragment extends Fragment /*implements TokenCompleteTextView.TokenListener*/{
-
-    public static final int MAX_MOVIE_RATING = 10;
-    public static final int QUERY_PARAM_COUNT = 6;
 
     Spinner genre;
     EditText numStar;
@@ -71,7 +71,7 @@ public class AdvancedSearchFragment extends Fragment /*implements TokenCompleteT
 
         genre = (Spinner) getView().findViewById(R.id.genre_entry);
         numStar = (EditText) getView().findViewById(R.id.star_entry);
-        numStar.addTextChangedListener(createTextWatcher(numStar, MAX_MOVIE_RATING));
+        numStar.addTextChangedListener(createTextWatcher(numStar, Constants.MAX_MOVIE_RATING));
         cast = (EditText) getView().findViewById(R.id.cast_entry);
 
         words = new Keyword[]{};
@@ -212,29 +212,20 @@ public class AdvancedSearchFragment extends Fragment /*implements TokenCompleteT
     }
 
     private void sendRequest() {
-        ((MainActivity)getActivity()).sendSearch(getQueryParams(),
-                (ArrayList<Keyword>)keywords.getObjects(), (ArrayList<Person>)persons.getObjects());
+        ((MainActivity)getActivity()).sendSearch(getQueryParams());
     }
 
-    private String[] getQueryParams() {
-        return new String[] {
+    private AdvSearch getQueryParams() {
+        return new AdvSearch(new String[] {
             (genre.getSelectedItemPosition() == 0 ? "" : getGenreSelection()),
             (numStar.getText().toString().isEmpty() ? "" : numStar.getText().toString()),
             (keywords.getText().toString().isEmpty() ? "" : getKeywords()),
             (cast.getText().toString().isEmpty() ? "" : getCast()),
             (releaseDateRel.getSelectedItemPosition() == 1 ? releaseDate.getText().toString() : ""),
-            (releaseDateRel.getSelectedItemPosition() == 2 ? releaseDate.getText().toString() : ""),
-        };
+            (releaseDateRel.getSelectedItemPosition() == 2 ? releaseDate.getText().toString() : "")},
+            (ArrayList<Keyword>)keywords.getObjects(),
+            (ArrayList<Person>)persons.getObjects());
     }
-
-//    private String parseAdvSearchToken(List<TokenData> data) {
-//        String idList = "";
-//        for (TokenData td : data) {
-//            if (td.getId() != -1)
-//                idList += td.getId() + ",";
-//        }
-//        return idList.length() > 0 ? idList.substring(0, idList.length() - 1) : "";
-//    }
 
     private String getKeywords() {
         List<Keyword> chosenKeywords = keywords.getObjects();
@@ -356,11 +347,7 @@ public class AdvancedSearchFragment extends Fragment /*implements TokenCompleteT
     }
 
     private void restoreSearch(Bundle savedData) {
-        String[] data = savedData.getStringArray(MainActivity.SAVED_SEARCH);
-
-        for (String s : data) {
-            Log.e("in fragment ", "is " + s);
-        }
+        String[] data = savedData.getStringArray(Constants.SAVED_SEARCH);
 
         if (!data[0].isEmpty()) {
             int target = Integer.parseInt(data[0]);
@@ -373,19 +360,19 @@ public class AdvancedSearchFragment extends Fragment /*implements TokenCompleteT
         }
         numStar.setText(data[1]);
 
-        ArrayList<Keyword> kList = savedData.getParcelableArrayList(MainActivity.KEYWORD_SEARCH);
+        ArrayList<Keyword> kList = savedData.getParcelableArrayList(Constants.KEYWORD_SEARCH);
         for (Keyword k : kList)
             keywords.addObject(k);
-        ArrayList<Person> pList = savedData.getParcelableArrayList(MainActivity.CAST_SEARCH);
+        ArrayList<Person> pList = savedData.getParcelableArrayList(Constants.CAST_SEARCH);
         for (Person p : pList)
             persons.addObject(p);
 
-        if (!data[2].isEmpty()) {
-            releaseDate.setText(data[2]);
+        if (!data[4].isEmpty()) {
+            releaseDate.setText(data[4]);
             releaseDateRel.setSelection(1);
         }
-        else if (!data[3].isEmpty()) {
-            releaseDate.setText(data[2]);
+        else if (!data[5].isEmpty()) {
+            releaseDate.setText(data[5]);
             releaseDateRel.setSelection(2);
         }
     }

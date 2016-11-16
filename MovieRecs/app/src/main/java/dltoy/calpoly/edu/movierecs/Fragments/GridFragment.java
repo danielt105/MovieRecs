@@ -21,6 +21,7 @@ import java.util.List;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 import dltoy.calpoly.edu.movierecs.Api.Models.ResultList;
 import dltoy.calpoly.edu.movierecs.BuildConfig;
+import dltoy.calpoly.edu.movierecs.Constants;
 import dltoy.calpoly.edu.movierecs.Fragments.advanced_search.AdvancedSearchFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.EndlessScrollListener;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.QueryType;
@@ -48,9 +49,6 @@ public class GridFragment extends Fragment {
     private int totalPages = 1;
     private SwipeRefreshLayout srf;
     private TextView noResults;
-    private TextView goBack;
-    private boolean setBack = false;
-    private String[] savedSearch;
 
     public GridFragment() {
         movies = new ArrayList<>();
@@ -82,17 +80,6 @@ public class GridFragment extends Fragment {
         int spanCount = DEFAULT_VERT_SPAN_COUNT;
         if (getArguments().containsKey(SPAN_COUNT)) {
             spanCount = args.getInt(SPAN_COUNT);
-        }
-
-        goBack = (TextView) getView().findViewById(R.id.revise_search);
-        if (setBack) {
-            goBack.setVisibility(View.VISIBLE);
-            goBack.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ((MainActivity)getActivity()).restoreSearch(savedSearch);
-                }
-            });
         }
 
         noResults = (TextView) getView().findViewById(R.id.no_results_text);
@@ -170,9 +157,8 @@ public class GridFragment extends Fragment {
                         page));
                 break;
             case QueryType.QUERY_ADV_SEARCH:
-                setBack = true;
                 String[] params = bundle.getStringArray(QueryType.QUERY_ADV_SEARCH_DATA);
-                if (params.length == AdvancedSearchFragment.QUERY_PARAM_COUNT)
+                if (params.length == Constants.QUERY_PARAM_COUNT)
                     setUpRequest(MainActivity.apiService.advSearch(
                             BuildConfig.apiKey,
                             page,
@@ -182,7 +168,6 @@ public class GridFragment extends Fragment {
                             params[3],
                             params[4],
                             params[5]));
-                savedSearch = new String[]{params[0], params[1], params[4], params[5]};
                 break;
         }
     }

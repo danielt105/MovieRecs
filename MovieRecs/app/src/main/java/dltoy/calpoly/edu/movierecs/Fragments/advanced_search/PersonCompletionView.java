@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.tokenautocomplete.TokenCompleteTextView;
 
 import dltoy.calpoly.edu.movierecs.Api.Models.Person;
+import dltoy.calpoly.edu.movierecs.Constants;
 import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.R;
 
@@ -29,7 +30,7 @@ public class PersonCompletionView extends TokenCompleteTextView<Person> {
         TextView view = (TextView) l.inflate(R.layout.person_token, (ViewGroup) getParent(), false);
         view.setText(p.getName());
 
-        int curTheme = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(MainActivity.THEME_KEY, 0);
+        int curTheme = PreferenceManager.getDefaultSharedPreferences(getContext()).getInt(Constants.THEME_KEY, 0);
         switch (curTheme) {
             case 2:
                 view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.cruDarkGold));
