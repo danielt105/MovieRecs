@@ -22,4 +22,9 @@ public class Constants {
     public static final int WATCHLIST_DESC_SPACE = 14;
     public static final int WATCHLIST_DESC_WIDE_MAX_LINE = 9;
     public static final int IMG_WID_DP = 150;
+
+    public static final long SPLASH_DELAY = 2l;
+    public static final int SPLASH_TEAM_NAME = 16;
+    public static final int SPLASH_TEXT_SIZE = 20;
+    public static final int SPLASH_PRESENTS = SPLASH_TEXT_SIZE / 2;
 }

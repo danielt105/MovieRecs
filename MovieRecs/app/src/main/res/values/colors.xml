@@ -14,7 +14,7 @@
 
     <color name="forest">#2e4600</color>
     <color name="lime">#a2c523</color>
-    <color name="earth">#7d4427</color>
+    <color name="fauna">#7d4427</color>
     <color name="grass">#486b00</color>
 
     <color name="warmGray">#e1dfe3</color>
@@ -22,10 +22,10 @@
     <color name="glacierBlue">#1995ad</color>
     <color name="overcast">#f1f1f2</color>
 
-    <color name="stormSea">#335252</color>
-    <color name="fog">#d4dde1</color>
-    <color name="darkerFog">#6e7477</color>
-    <color name="charcoal">#2d3033</color>
+    <color name="blueBack">#192A3C</color>
+    <color name="blueTitle">#145896</color>
+    <color name="forestPart">#58A66F</color>
+    <color name="swizzySweetGold">#B7A15E</color>
 
     <color name="suggestionBg">#9e9e9e</color>
 </resources>

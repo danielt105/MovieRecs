@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <dltoy.calpoly.edu.movierecs.CustomFontTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:id="@+id/first_line"
+        android:text="@string/team_name"/>
+    <dltoy.calpoly.edu.movierecs.CustomFontTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:id="@+id/second_line"
+        android:text="@string/presents"/>
+    <dltoy.calpoly.edu.movierecs.CustomFontTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:id="@+id/app_name_line"
+        android:text="@string/app_name"/>
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_launcher"/>
+
+</LinearLayout>

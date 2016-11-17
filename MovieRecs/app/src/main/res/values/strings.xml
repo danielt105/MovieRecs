@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">MovieRecs</string>
+    <string name="team_name">Condor and Friends</string>
+    <string name="presents">presents</string>
 
     <string name="filter">Filter</string>
     <string name="top_rated">Top Rated</string>
@@ -70,9 +72,9 @@
     <string-array name="theme_options">
         <item>Default</item>
         <item>Cru Gold :D</item>
-        <item>Outdoorsy</item>
+        <item>Flora and Fauna</item>
         <item>Brrrr its cold</item>
-        <item>Understated n Versatile</item>
+        <item>Blue Forest</item>
     </string-array>
     <string-array name="theme_values">
         <item>1</item>

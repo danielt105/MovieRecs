@@ -35,15 +35,15 @@
         <item name="android:background">@color/ice</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
-    <style name="UnderstatedVersatile" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/charcoal</item>
-        <item name="colorPrimaryDark">@color/fog</item>
-        <item name="colorAccent">@color/fog</item>
-        <item name="android:background">@color/charcoal</item>
-        <item name="android:textColor">@color/fog</item>
-        <item name="android:textColorHint">@color/darkerFog</item>
-        <item name="android:colorButtonNormal">@color/stormSea</item>
-        <item name="android:colorControlNormal">@color/darkerFog</item>
+    <style name="BlueForest" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/blueBack</item>
+        <item name="colorPrimaryDark">@color/blueTitle</item>
+        <item name="colorAccent">@color/forestPart</item>
+        <item name="android:background">@color/blueBack</item>
+        <item name="android:textColor">@color/forestPart</item>
+        <item name="android:textColorHint">@color/swizzySweetGold</item>
+        <item name="android:colorButtonNormal">@color/blueTitle</item>
+        <item name="android:colorControlNormal">@color/swizzySweetGold</item>
         <!--<item name="app:tabTextColor">@color/fog</item>-->
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>

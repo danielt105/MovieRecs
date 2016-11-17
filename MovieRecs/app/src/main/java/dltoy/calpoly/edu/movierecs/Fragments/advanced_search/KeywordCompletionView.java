@@ -37,7 +37,7 @@ public class KeywordCompletionView extends TokenCompleteTextView<Keyword> {
                 view.setTextColor(ContextCompat.getColor(getContext(), R.color.cruBlack));
                 break;
             case 3:
-                view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.earth));
+                view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.fauna));
                 view.setTextColor(ContextCompat.getColor(getContext(), R.color.lime));
                 break;
             case 4:
@@ -45,8 +45,8 @@ public class KeywordCompletionView extends TokenCompleteTextView<Keyword> {
                 view.setTextColor(ContextCompat.getColor(getContext(), R.color.warmGray));
                 break;
             case 5:
-                view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.darkerFog));
-                view.setTextColor(ContextCompat.getColor(getContext(), R.color.fog));
+                view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.swizzySweetGold));
+                view.setTextColor(ContextCompat.getColor(getContext(), R.color.blueTitle));
                 break;
             default:
                 view.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccent));

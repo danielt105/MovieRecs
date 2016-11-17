@@ -264,6 +264,8 @@ public class AdvancedSearchFragment extends Fragment /*implements TokenCompleteT
                         @Override
                         public void onNext(GenreList genreList) {
                             genres = (ArrayList<Genre>) genreList.results;
+                            for (Genre g : genres)
+                                MainActivity.db.addGenre(g);
                             populateGenreList();
                         }
                     });
@@ -280,7 +282,6 @@ public class AdvancedSearchFragment extends Fragment /*implements TokenCompleteT
         genreTextList.add(getResources().getString(R.string.genre_hint));
         for (Genre g : genres) {
             genreTextList.add(g.getName());
-            MainActivity.db.addGenre(g);
         }
 
         genreAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, genreTextList);

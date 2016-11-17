@@ -36,7 +36,6 @@ import dltoy.calpoly.edu.movierecs.Fragments.GridFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.SettingsFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.watchlist.NotWatchedFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.watchlist.WatchedFragment;
-import dltoy.calpoly.edu.movierecs.Fragments.watchlist.WatchlistBaseFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.QueryType;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -295,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case 3:
                 setTheme(R.style.Outdoorsy);
-                toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.forest));
+                toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.fauna));
                 toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.grass));
                 navView.setBackgroundColor(ContextCompat.getColor(this, R.color.lime));
                 navView.setItemTextColor(ContextCompat.getColorStateList(this, R.color.outdoor_text));
@@ -308,20 +307,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 navView.setItemTextColor(ContextCompat.getColorStateList(this, R.color.ice_text));
                 break;
             case 5:
-                setTheme(R.style.UnderstatedVersatile);
-                toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.fog));
-                toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.stormSea));
-                navView.setBackgroundColor(ContextCompat.getColor(this, R.color.charcoal));
-                navView.setItemTextColor(ContextCompat.getColorStateList(this, R.color.understated_versatile));
+                setTheme(R.style.BlueForest);
+                toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.forestPart));
+                toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.blueTitle));
+                navView.setBackgroundColor(ContextCompat.getColor(this, R.color.blueBack));
+                navView.setItemTextColor(ContextCompat.getColorStateList(this, R.color.blue_forest));
                 break;
             default:
                 setTheme(R.style.AppTheme);
         }
     }
 
-    public void setToolbarText(String text) {
-        toolbar.setTitle(text);
-    }
+//    public void setToolbarText(String text) {
+//        toolbar.setTitle(text);
+//    }
 
     public int getTextColor() {
         int curTheme = pref.getInt(Constants.THEME_KEY, 0);
@@ -337,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 color = R.color.ice_text;
                 break;
             case 5:
-                color = R.color.understated_versatile;
+                color = R.color.blue_forest;
                 break;
             default:
                 color = R.color.white;

@@ -1,12 +1,9 @@
 package dltoy.calpoly.edu.movierecs;
 
 import android.content.Intent;
-import android.support.design.widget.NavigationView;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -135,7 +132,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 setTheme(R.style.IceIceBaby);
                 break;
             case 5:
-                setTheme(R.style.UnderstatedVersatile);
+                setTheme(R.style.BlueForest);
                 break;
             default:
                 setTheme(R.style.AppTheme);
