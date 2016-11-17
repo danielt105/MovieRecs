@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -18,6 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import br.com.mauker.materialsearchview.MaterialSearchView;
@@ -43,6 +46,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private NavigationView navView;
     private Toolbar toolbar;
+    private FrameLayout mainPane;
+    private FrameLayout otherPane;
+    private boolean isSplit = false;
+
     public static MovieApi apiService;
     public static DBHandler db;
 
@@ -57,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         pref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        mainPane = (FrameLayout) findViewById(R.id.content);
+        otherPane = (FrameLayout) findViewById(R.id.other_content);
 
         //set up toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -88,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.home:
                 curFragId = navId;
                 if (temp == null || !(temp instanceof GridFragment)) {
+                    revertLayout();
                     GridFragment gf = new GridFragment();
                     Bundle bundle = new Bundle();
 
@@ -100,24 +111,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.advSearch:
                 curFragId = navId;
                 if (temp == null || !(temp instanceof AdvancedSearchFragment)) {
+                    if (otherPane != null) {
+                        isSplit = true;
+                        changeLayoutWeight(Constants.ADV_SRC_RATIO);
+//                        getSupportFragmentManager().beginTransaction()
+//                                .replace(R.id.other_content, new GridFragment()).commit();
+                    }
+
                     loadFragment(R.string.adv_search, R.id.advSearch, new AdvancedSearchFragment());
                 }
                 break;
             case R.id.watchlist:
                 curFragId = navId;
                 if (temp == null || !(temp instanceof WatchedFragment)) {
+                    revertLayout();
                     loadFragment(R.string.watchlist_title, R.id.watchlist, new WatchedFragment());
                 }
                 break;
             case R.id.not_watchedlist:
                 curFragId = navId;
                 if (temp == null || !(temp instanceof NotWatchedFragment)) {
+                    revertLayout();
                     loadFragment(R.string.not_watchlist_title, R.id.not_watchedlist, new NotWatchedFragment());
                 }
                 break;
             case R.id.settings:
                 curFragId = navId;
                 if (temp == null || !(temp instanceof SettingsFragment)) {
+                    revertLayout();
                     loadFragment(R.string.settings, R.id.settings, new SettingsFragment());
                 }
                 break;
@@ -342,13 +363,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void sendSearch(AdvSearch search) {
         savedSearch = search;
-        sentSearch = true;
-        AdvancedSearchResults gf = new AdvancedSearchResults();
+        GridFragment gf = otherPane == null ? new AdvancedSearchResults() : new GridFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_ADV_SEARCH);
         bundle.putStringArray(QueryType.QUERY_ADV_SEARCH_DATA, search.query);
         gf.setArguments(bundle);
-        loadFragment(R.string.adv_search_results, R.id.movie_grid, gf);
+        if (otherPane == null) {
+            sentSearch = true;
+            loadFragment(R.string.adv_search_results, R.id.movie_grid, gf);
+        }
+        else
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.other_content, gf).commit();
     }
 
     public void restoreSearch() {
@@ -362,5 +388,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             adf.setArguments(bundle);
             loadFragment(R.string.adv_search, R.id.advSearch, adf);
         }
+    }
+
+    private void changeLayoutWeight(float contentPercent) {
+        if (otherPane != null) {
+            mainPane.setLayoutParams(new LinearLayout.LayoutParams(
+                    0, FrameLayout.LayoutParams.MATCH_PARENT,
+                    contentPercent));
+            otherPane.setLayoutParams(new LinearLayout.LayoutParams(0,
+                    LinearLayoutCompat.LayoutParams.MATCH_PARENT, 1 - contentPercent));
+        }
+    }
+
+    //hides the other framelayout from view (shrinks it)
+    private void revertLayout() {
+        if (isSplitPane() && isSplit) {
+            isSplit = false;
+            getSupportFragmentManager().beginTransaction().
+                    remove(getSupportFragmentManager().findFragmentById(R.id.other_content)).commit();
+            changeLayoutWeight(Constants.DEFAULT_RATIO);
+        }
+    }
+
+    public boolean isSplitPane() {
+        return otherPane != null;
     }
 }
