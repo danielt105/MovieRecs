@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private FrameLayout mainPane;
     private FrameLayout otherPane;
+    private static boolean splitable;
     private boolean isSplit = false;
 
     public static MovieApi apiService;
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mainPane = (FrameLayout) findViewById(R.id.content);
         otherPane = (FrameLayout) findViewById(R.id.other_content);
+        splitable = otherPane != null;
 
         //set up toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -404,13 +406,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void revertLayout() {
         if (isSplitPane() && isSplit) {
             isSplit = false;
-            getSupportFragmentManager().beginTransaction().
-                    remove(getSupportFragmentManager().findFragmentById(R.id.other_content)).commit();
+            Fragment temp = getSupportFragmentManager().findFragmentById(R.id.other_content);
+            if (temp != null)
+                getSupportFragmentManager().beginTransaction().remove(temp).commit();
             changeLayoutWeight(Constants.DEFAULT_RATIO);
         }
     }
 
-    public boolean isSplitPane() {
-        return otherPane != null;
+    public static boolean isSplitPane() {
+        return splitable;
     }
 }

@@ -18,4 +18,8 @@ public class Constants {
 
     public static final float ADV_SRC_RATIO = 0.45f;
     public static final float DEFAULT_RATIO = 1.0f;
+
+    public static final int WATCHLIST_DESC_SPACE = 14;
+    public static final int WATCHLIST_DESC_WIDE_MAX_LINE = 9;
+    public static final int IMG_WID_DP = 150;
 }

@@ -6,12 +6,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -79,6 +82,18 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
             switchList = (CheckBox) itemView.findViewById(R.id.watchlist_entry_checkbox);
             switchList.setOnCheckedChangeListener(this);
             itemView.setOnClickListener(this);
+
+            //resize stuff if its in on the tablet -_-
+            if (MainActivity.isSplitPane()) {
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)desc.getLayoutParams();
+                params.setMargins(0, Constants.WATCHLIST_DESC_SPACE, 0, 0);
+                desc.setLayoutParams(params);
+                desc.setMaxLines(Constants.WATCHLIST_DESC_WIDE_MAX_LINE);
+                int wid = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                        Constants.IMG_WID_DP, context.getResources().getDisplayMetrics());
+                img.setLayoutParams(new LinearLayout.LayoutParams(wid,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+            }
         }
 
         public void bind(Movie m) {
