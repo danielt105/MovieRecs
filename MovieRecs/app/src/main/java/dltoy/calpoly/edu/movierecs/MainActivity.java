@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mainPane = (FrameLayout) findViewById(R.id.content);
         otherPane = (FrameLayout) findViewById(R.id.other_content);
         splitable = otherPane != null;
+        Log.e("splitable is ", splitable + "");
 
         //set up toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -111,14 +112,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.advSearch:
                 curFragId = navId;
-                if (temp == null || !(temp instanceof AdvancedSearchFragment)) {
-                    if (otherPane != null) {
-                        isSplit = true;
-                        changeLayoutWeight(Constants.ADV_SRC_RATIO);
-//                        getSupportFragmentManager().beginTransaction()
-//                                .replace(R.id.other_content, new GridFragment()).commit();
-                    }
+                if (otherPane != null){
+                    isSplit = true;
+                    changeLayoutWeight(Constants.ADV_SRC_RATIO);
+                }
 
+                if (temp == null || !(temp instanceof AdvancedSearchFragment)) {
                     loadFragment(R.string.adv_search, R.id.advSearch, new AdvancedSearchFragment());
                 }
                 break;
