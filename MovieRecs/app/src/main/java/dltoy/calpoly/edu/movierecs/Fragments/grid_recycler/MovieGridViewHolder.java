@@ -12,6 +12,7 @@ import com.squareup.picasso.Picasso;
 
 import dltoy.calpoly.edu.movierecs.Api.ImageUtil;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
+import dltoy.calpoly.edu.movierecs.Fragments.GridFragment;
 import dltoy.calpoly.edu.movierecs.MovieDetailsActivity;
 import dltoy.calpoly.edu.movierecs.R;
 
@@ -44,7 +45,7 @@ public class MovieGridViewHolder extends RecyclerView.ViewHolder implements View
     public void bind(Movie m) {
         movie = m;
 
-        ImageUtil.insertImage(movie.getImagePath(), 300, poster);
+        ImageUtil.insertImage(movie.getImagePath(), GridFragment.PREF_TILE_SIZE, poster);
         title.setText(movie.getTitle());
         rating.setText(ImageUtil.STAR_ICON + Float.toString(movie.getRating()));
     }

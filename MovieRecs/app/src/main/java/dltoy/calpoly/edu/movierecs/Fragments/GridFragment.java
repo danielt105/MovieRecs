@@ -44,7 +44,8 @@ public class GridFragment extends Fragment {
     public static final String SPAN_COUNT = "SPAN_COUNT";
     public static final int DEFAULT_HORIZ_SPAN_COUNT = 1;
     public static final int DEFAULT_VERT_SPAN_COUNT = 2;
-    private static final int PREF_TILE_SIZE = 500;
+    public static final int PREF_TILE_SIZE = 500;
+    private static final double TILE_NUM_RATIO = 0.625;
 
     protected RecyclerView rv;
     protected List<Movie> movies;
@@ -83,9 +84,15 @@ public class GridFragment extends Fragment {
         // calculate screen width and determine tile width based on that
         DisplayMetrics metrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
         int spanCount = (metrics.widthPixels / metrics.densityDpi) % PREF_TILE_SIZE;
+
+        /*  make sure the tiles fit nicely on the page. There should be a minimum of two, but the
+            preferred tile size it too small to look nice on tablets, so reduce the number
+            shown on each row when there are more than 5 tiles per row... This is completely
+            done for no other reason than to look good...
+        */
         spanCount = spanCount <= 1 ? DEFAULT_VERT_SPAN_COUNT : spanCount;
+        spanCount = spanCount >= 5 ? (int)Math.round(spanCount * TILE_NUM_RATIO) : spanCount;
 
         if (getArguments().containsKey(SPAN_COUNT)) {
             spanCount = args.getInt(SPAN_COUNT);

@@ -12,7 +12,6 @@ import dltoy.calpoly.edu.movierecs.R;
 
 public class ImageUtil {
     public static final String STAR_ICON = "\u2b50 ";
-    public static final double WIDTH_HEIGHT_RATIO = 2/3;
 
     public static void insertImage(String path, int width, ImageView imageView) {
         Picasso.with(imageView.getContext())
