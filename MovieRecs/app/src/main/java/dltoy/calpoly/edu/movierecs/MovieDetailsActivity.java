@@ -15,7 +15,10 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 import dltoy.calpoly.edu.movierecs.Api.ImageUtil;
+import dltoy.calpoly.edu.movierecs.Api.Models.Genre;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 import dltoy.calpoly.edu.movierecs.Fragments.GridFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.QueryType;
@@ -87,6 +90,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 rating.setText(ImageUtil.STAR_ICON + movie.getRating());
 
                 ((TextView) findViewById(R.id.details_desc)).setText(movie.getDescription());
+                ((TextView) findViewById(R.id.details_genre)).setText("Genre: " + getGenreString(movie.getGenres()));
                 ((TextView) findViewById(R.id.details_release)).setText(getString(R.string.release_lable) + movie.getDate());
                 ((TextView) findViewById(R.id.details_runtime)).setText("Length: " + movie.getRuntime() + " minutes");
 
@@ -133,6 +137,10 @@ public class MovieDetailsActivity extends AppCompatActivity {
                         .commit();
             }
         });
+    }
+
+    private String getGenreString(List<Genre> genres) {
+        return genres.toString().replace("[", "").replace("]", "");
     }
 
     private void setupTheme() {

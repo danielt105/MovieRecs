@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Movie {
@@ -16,7 +17,7 @@ public class Movie {
     private @SerializedName("vote_average") float rating;
     private @SerializedName("release_date") String date;
     private @SerializedName("runtime") int runtime;
-    /*private @SerializedName("genres") GenreList genres;*/
+    private @SerializedName("genres") List<Genre> genres;
 
     private int dbid;
     private boolean isWatched;
@@ -104,7 +105,7 @@ public class Movie {
         return runtime;
     }
 
-    /*public GenreList getGenres() {
+    public List<Genre> getGenres() {
         return genres;
-    }*/
+    }
 }
