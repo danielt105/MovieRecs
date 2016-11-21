@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,6 +20,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import dltoy.calpoly.edu.movierecs.Api.ImageUtil;
+import dltoy.calpoly.edu.movierecs.Api.Models.Certification;
 import dltoy.calpoly.edu.movierecs.Api.Models.Genre;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 import dltoy.calpoly.edu.movierecs.Api.Models.Personel;
@@ -30,6 +33,7 @@ import rx.schedulers.Schedulers;
 public class MovieDetailsActivity extends AppCompatActivity {
     public static final String MOVIE_ID_EXTRA = "MOVIE_ID_EXTRA";
     private Movie model;
+    private Menu menu;
     private int fragToReturnTo;
 
     @Override
@@ -45,6 +49,17 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
         fragToReturnTo = getIntent().getIntExtra(Constants.CUR_FRAG_KEY, R.id.home);
         Log.e("got", fragToReturnTo + "");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -99,6 +114,26 @@ public class MovieDetailsActivity extends AppCompatActivity {
                         ((TextView) findViewById(R.id.details_crew)).setText(getListString(personel.getCrew(), 5));
                     }
                 });
+
+        MainActivity.apiService.getCertification(id, BuildConfig.apiKey)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Certification>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ((TextView) findViewById(R.id.details_cert)).setText(R.string.not_available_short);
+                    }
+
+                    @Override
+                    public void onNext(Certification cert) {
+                        ((TextView) findViewById(R.id.details_cert)).setText("Rated: " + cert.getCertification(Certification.US_CERT));
+                    }
+                });
     }
 
     private void setUpUi(final Movie movie) {
@@ -108,7 +143,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 TextView title = (TextView) findViewById(R.id.details_title);
                 title.setText(movie.getTitle());
 
-                TextView rating = (TextView) findViewById(R.id.details_rating);
+                final TextView rating = (TextView) findViewById(R.id.details_rating);
                 rating.setText(ImageUtil.STAR_ICON + movie.getRating());
 
                 ((TextView) findViewById(R.id.details_desc)).setText(movie.getDescription());
@@ -116,11 +151,14 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 ((TextView) findViewById(R.id.details_release)).setText(getString(R.string.release_lable) + movie.getDate());
                 ((TextView) findViewById(R.id.details_runtime)).setText("Length: " + movie.getRuntime() + " minutes");
 
-                final Button btn = (Button) findViewById(R.id.details_add);
-                btn.setCompoundDrawablesWithIntrinsicBounds(MainActivity.db.containsMovie(movie) ? R.drawable.minus : R.drawable.add, 0, 0, 0);
-                btn.setOnClickListener(new View.OnClickListener() {
+                boolean inL = MainActivity.db.containsMovie(movie);
+                MenuItem addItem = menu.add(inL ? "Remove from watchlist" : "Add to watchlist");
+                addItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+                addItem.setIcon(inL ? R.drawable.minus : R.drawable.add);
+
+                addItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
-                    public void onClick(View v) {
+                    public boolean onMenuItemClick(MenuItem item) {
                         boolean isInList = MainActivity.db.containsMovie(movie);
 
                         if (isInList) {
@@ -129,13 +167,15 @@ public class MovieDetailsActivity extends AppCompatActivity {
                             MainActivity.db.addMovie(movie);
                         }
 
-                        btn.setCompoundDrawablesWithIntrinsicBounds(isInList ? R.drawable.add : R.drawable.minus, 0, 0, 0);
+                        item.setIcon(isInList ? R.drawable.add : R.drawable.minus);
+                        item.setTitle(isInList ? "Add to watchlist" : "Remove from watchlist" );
                         String msg = isInList ? " removed from watchlist" : " added to watchlist";
 
-                        Snackbar snackbar = Snackbar.make(v, movie.getTitle() + msg, Snackbar.LENGTH_LONG);
+                        Snackbar snackbar = Snackbar.make(rating, movie.getTitle() + msg, Snackbar.LENGTH_LONG);
                         snackbar.getView().setBackgroundColor(ContextCompat
-                                        .getColor(MovieDetailsActivity.this, R.color.colorPrimary));
+                                .getColor(MovieDetailsActivity.this, R.color.colorPrimary));
                         snackbar.show();
+                        return true;
                     }
                 });
 

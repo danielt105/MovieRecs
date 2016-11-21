@@ -72,6 +72,7 @@
     <string name="undo_label">Undo</string>
     <string name="cast_label">Cast</string>
     <string name="crew">Crew</string>
+    <string name="not_available_short">N/A</string>
     <string-array name="theme_options">
         <item>Default</item>
         <item>Cru Gold :D</item>

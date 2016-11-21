@@ -1,5 +1,6 @@
 package dltoy.calpoly.edu.movierecs.Api;
 
+import dltoy.calpoly.edu.movierecs.Api.Models.Certification;
 import dltoy.calpoly.edu.movierecs.Api.Models.GenreList;
 import dltoy.calpoly.edu.movierecs.Api.Models.Keyword;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
@@ -27,6 +28,9 @@ public interface MovieApi {
                                              @Query("page") int page);
     @GET("movie/{id}/credits")
     Observable<Personel> getCastAndCrew(@Path("id") int id, @Query("api_key") String key);
+
+    @GET("movie/{id}/release_dates")
+    Observable<Certification> getCertification(@Path("id") int id, @Query("api_key") String key);
 
     @GET("search/movie")
     Observable<ResultList<Movie>> searchByTitle(@Query("api_key") String key, @Query("query") String query);

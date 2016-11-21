@@ -60,6 +60,11 @@
                     android:layout_marginTop="10dp"
                     android:textSize="17sp" />
 
+                <TextView android:id="@+id/details_cert"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="17sp" />
+
                 <TextView android:id="@+id/details_release"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -69,18 +74,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="17sp" />
-
-                <Button android:id="@+id/details_add"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:paddingLeft="5dp"
-                    android:paddingStart="5dp"
-                    android:paddingRight="10dp"
-                    android:paddingEnd="10dp"
-                    android:background="@color/colorPrimary"
-                    android:textColor="@color/white"
-                    android:text="@string/add_to_watchlist" />
             </LinearLayout>
         </LinearLayout>
 
