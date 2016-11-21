@@ -8,6 +8,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,6 +44,7 @@ public class GridFragment extends Fragment {
     public static final String SPAN_COUNT = "SPAN_COUNT";
     public static final int DEFAULT_HORIZ_SPAN_COUNT = 1;
     public static final int DEFAULT_VERT_SPAN_COUNT = 2;
+    private static final int PREF_TILE_SIZE = 500;
 
     protected RecyclerView rv;
     protected List<Movie> movies;
@@ -78,7 +80,13 @@ public class GridFragment extends Fragment {
 
         adapter.setHorizontal(isHorizontal);
 
-        int spanCount = DEFAULT_VERT_SPAN_COUNT;
+        // calculate screen width and determine tile width based on that
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        int spanCount = (metrics.widthPixels / metrics.densityDpi) % PREF_TILE_SIZE;
+        spanCount = spanCount <= 1 ? DEFAULT_VERT_SPAN_COUNT : spanCount;
+
         if (getArguments().containsKey(SPAN_COUNT)) {
             spanCount = args.getInt(SPAN_COUNT);
         }
@@ -104,7 +112,7 @@ public class GridFragment extends Fragment {
 
         // set the margins on each grid item
         final boolean isH = isHorizontal;
-        rv.addItemDecoration(new RecyclerView.ItemDecoration() {
+        /*rv.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 int pos = parent.getChildLayoutPosition(view);
@@ -137,7 +145,7 @@ public class GridFragment extends Fragment {
                     }
                 }
             }
-        });
+        });*/
     }
 
     protected void loadContent(Bundle bundle, int page) {

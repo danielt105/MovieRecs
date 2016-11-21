@@ -51,6 +51,6 @@ public class MovieGridViewHolder extends RecyclerView.ViewHolder implements View
 
     @Override
     public void onClick(View v) {
-        Log.d("TEST", "has been clicked");
+        Log.d("TEST", String.valueOf(v.getMeasuredWidth()));
     }
 }
