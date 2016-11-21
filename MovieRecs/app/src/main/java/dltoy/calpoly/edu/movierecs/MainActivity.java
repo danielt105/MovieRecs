@@ -414,4 +414,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public static boolean isSplitPane() {
         return splitable;
     }
+
+    public static void deleteFromDb(Movie movie) {
+        db.deleteMovie(movie);
+    }
 }

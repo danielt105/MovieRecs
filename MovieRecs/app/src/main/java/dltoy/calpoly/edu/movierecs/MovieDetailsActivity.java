@@ -1,6 +1,8 @@
 package dltoy.calpoly.edu.movierecs;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
@@ -88,12 +90,26 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 ((TextView) findViewById(R.id.details_release)).setText(getString(R.string.release_lable) + movie.getDate());
                 ((TextView) findViewById(R.id.details_runtime)).setText("Length: " + movie.getRuntime() + " minutes");
 
-                Button btn = (Button) findViewById(R.id.details_add);
+                final Button btn = (Button) findViewById(R.id.details_add);
+                btn.setCompoundDrawablesWithIntrinsicBounds(MainActivity.db.containsMovie(movie) ? R.drawable.minus : R.drawable.add, 0, 0, 0);
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MainActivity.db.addMovie(movie);
-                        Toast.makeText(MovieDetailsActivity.this, "Added to watchlist", Toast.LENGTH_SHORT).show();
+                        boolean isInList = MainActivity.db.containsMovie(movie);
+
+                        if (isInList) {
+                            MainActivity.db.deleteMovieById(movie.getId());
+                        } else {
+                            MainActivity.db.addMovie(movie);
+                        }
+
+                        btn.setCompoundDrawablesWithIntrinsicBounds(isInList ? R.drawable.add : R.drawable.minus, 0, 0, 0);
+                        String msg = isInList ? " removed from watchlist" : " added to watchlist";
+
+                        Snackbar snackbar = Snackbar.make(v, movie.getTitle() + msg, Snackbar.LENGTH_LONG);
+                        snackbar.getView().setBackgroundColor(ContextCompat
+                                        .getColor(MovieDetailsActivity.this, R.color.colorPrimary));
+                        snackbar.show();
                     }
                 });
 

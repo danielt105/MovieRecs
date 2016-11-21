@@ -16,6 +16,7 @@ public class Movie {
     private @SerializedName("vote_average") float rating;
     private @SerializedName("release_date") String date;
     private @SerializedName("runtime") int runtime;
+    /*private @SerializedName("genres") GenreList genres;*/
 
     private int dbid;
     private boolean isWatched;
@@ -102,4 +103,8 @@ public class Movie {
     public int getRuntime() {
         return runtime;
     }
+
+    /*public GenreList getGenres() {
+        return genres;
+    }*/
 }

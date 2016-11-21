@@ -73,8 +73,6 @@
                     android:paddingStart="5dp"
                     android:paddingRight="10dp"
                     android:paddingEnd="10dp"
-                    android:drawableLeft="@drawable/add"
-                    android:drawableStart="@drawable/add"
                     android:background="@color/colorPrimary"
                     android:textColor="@color/white"
                     android:text="@string/add_to_watchlist" />

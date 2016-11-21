@@ -69,6 +69,7 @@
     <string name="description_label">Description</string>
     <string name="recommendations_lable">Recommendations</string>
     <string name="release_lable">"Released: "</string>
+    <string name="undo_label">Undo</string>
     <string-array name="theme_options">
         <item>Default</item>
         <item>Cru Gold :D</item>

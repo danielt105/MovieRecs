@@ -108,7 +108,9 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        return cursor.moveToFirst();
+        boolean isInList = cursor.moveToFirst();
+        cursor.close();
+        return isInList;
     }
 
     public List<Movie> getWatchlist(int notWatched) {
@@ -158,6 +160,13 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_MOVIES, KEY_ID + " = ?",
                 new String[] { String.valueOf(movie.getDbid()) });
+        db.close();
+    }
+
+    public void deleteMovieById(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_MOVIES, KEY_MOVIE_ID + " = ?",
+                new String[] { String.valueOf(id) });
         db.close();
     }
 
