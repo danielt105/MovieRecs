@@ -4,6 +4,7 @@ import dltoy.calpoly.edu.movierecs.Api.Models.GenreList;
 import dltoy.calpoly.edu.movierecs.Api.Models.Keyword;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 import dltoy.calpoly.edu.movierecs.Api.Models.Person;
+import dltoy.calpoly.edu.movierecs.Api.Models.Personel;
 import dltoy.calpoly.edu.movierecs.Api.Models.ResultList;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -24,6 +25,8 @@ public interface MovieApi {
     @GET("movie/{id}/recommendations")
     Observable<ResultList<Movie>> getRecommendations(@Path("id") int id, @Query("api_key") String key,
                                              @Query("page") int page);
+    @GET("movie/{id}/credits")
+    Observable<Personel> getCastAndCrew(@Path("id") int id, @Query("api_key") String key);
 
     @GET("search/movie")
     Observable<ResultList<Movie>> searchByTitle(@Query("api_key") String key, @Query("query") String query);

@@ -20,6 +20,7 @@ import java.util.List;
 import dltoy.calpoly.edu.movierecs.Api.ImageUtil;
 import dltoy.calpoly.edu.movierecs.Api.Models.Genre;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
+import dltoy.calpoly.edu.movierecs.Api.Models.Personel;
 import dltoy.calpoly.edu.movierecs.Fragments.GridFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.QueryType;
 import rx.Observer;
@@ -58,7 +59,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     private void getMovieData(int id) {
         MainActivity.apiService.getById(id, BuildConfig.apiKey)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<Movie>() {
                     @Override
@@ -77,6 +78,27 @@ public class MovieDetailsActivity extends AppCompatActivity {
                         setUpUi(movie);
                     }
                 });
+
+        MainActivity.apiService.getCastAndCrew(id, BuildConfig.apiKey)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Personel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(MovieDetailsActivity.this, "Could not get cast and crew", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onNext(Personel personel) {
+                        ((TextView) findViewById(R.id.details_cast)).setText(getListString(personel.getCast(), 5));
+                        ((TextView) findViewById(R.id.details_crew)).setText(getListString(personel.getCrew(), 5));
+                    }
+                });
     }
 
     private void setUpUi(final Movie movie) {
@@ -90,7 +112,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 rating.setText(ImageUtil.STAR_ICON + movie.getRating());
 
                 ((TextView) findViewById(R.id.details_desc)).setText(movie.getDescription());
-                ((TextView) findViewById(R.id.details_genre)).setText("Genre: " + getGenreString(movie.getGenres()));
+                ((TextView) findViewById(R.id.details_genre)).setText("Genre: " + getListString(movie.getGenres()));
                 ((TextView) findViewById(R.id.details_release)).setText(getString(R.string.release_lable) + movie.getDate());
                 ((TextView) findViewById(R.id.details_runtime)).setText("Length: " + movie.getRuntime() + " minutes");
 
@@ -139,8 +161,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private String getGenreString(List<Genre> genres) {
-        return genres.toString().replace("[", "").replace("]", "");
+    private String getListString(List<?> list) {
+        return list.toString().replace("[", "").replace("]", "");
+    }
+
+    private String getListString(List<?> list, int length) {
+        return getListString(list.subList(0, length));
     }
 
     private void setupTheme() {
