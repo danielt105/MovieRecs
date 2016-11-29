@@ -14,13 +14,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 import dltoy.calpoly.edu.movierecs.Api.MovieComparators;
-import dltoy.calpoly.edu.movierecs.Fragments.watchlist.WatchlistAdapter;
 import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.R;
 
@@ -49,7 +49,16 @@ public abstract class WatchlistBaseFragment extends Fragment  {
         super.onViewCreated(view, savedInstanceState);
         getList();
 
-        adapter = new WatchlistAdapter(getContext(), movieList);
+        adapter = new WatchlistAdapter(getContext(), movieList, getInitCheckState());
+        adapter.setWatchListEntryListener(new WatchlistEntryListener() {
+            @Override
+            public void onWatchlistEntrySelected(Movie m) {
+                Toast.makeText(getActivity(), m.getTitle() + toastMessage(),
+                        Toast.LENGTH_LONG).show();
+                getList();
+                setList();
+            }
+        });
         list = (RecyclerView)getView().findViewById(R.id.the_list);
         if ((((MainActivity)getActivity()).isSplitPane())) {
             list.setLayoutManager(new GridLayoutManager(list.getContext(), 2, GridLayoutManager.VERTICAL, false));
@@ -72,6 +81,9 @@ public abstract class WatchlistBaseFragment extends Fragment  {
 
     protected abstract void getList();
 
+    protected abstract boolean getInitCheckState();
+
+    protected abstract String toastMessage();
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -88,5 +100,17 @@ public abstract class WatchlistBaseFragment extends Fragment  {
                 Log.e("Filter Menu", "Couldn't find specified id");
         }
         return true;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getList();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setList();
     }
 }

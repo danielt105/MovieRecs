@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mainPane = (FrameLayout) findViewById(R.id.content);
         otherPane = (FrameLayout) findViewById(R.id.other_content);
         splitable = otherPane != null;
-        Log.e("splitable is ", splitable + "");
+//        Log.e("splitable is ", splitable + "");
 
         //set up toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
