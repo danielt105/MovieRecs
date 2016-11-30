@@ -11,6 +11,8 @@ public class Constants {
     public static final String CAST_SEARCH = "casts";
     public static final String SAVED_SEARCH = "saving stuffs";
 
+    public static final String ADV_SRC_SPLIT_SPAN = "one less";
+
     public static final int MAX_MOVIE_RATING = 10;
     public static final int QUERY_PARAM_COUNT = 6;
 

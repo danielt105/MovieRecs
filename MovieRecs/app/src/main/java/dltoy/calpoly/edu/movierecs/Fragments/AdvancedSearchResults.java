@@ -34,5 +34,4 @@ public class AdvancedSearchResults extends GridFragment {
         }
         return true;
     }
-
 }

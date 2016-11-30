@@ -363,9 +363,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void sendSearch(AdvSearch search) {
         savedSearch = search;
-        GridFragment gf = otherPane == null ? new AdvancedSearchResults() : new GridFragment();
+        GridFragment gf = (otherPane == null) ? new AdvancedSearchResults() : new GridFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_ADV_SEARCH);
+        bundle.putBoolean(Constants.ADV_SRC_SPLIT_SPAN, true);
         bundle.putStringArray(QueryType.QUERY_ADV_SEARCH_DATA, search.query);
         gf.setArguments(bundle);
         if (otherPane == null) {

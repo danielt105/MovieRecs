@@ -38,6 +38,8 @@ import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static dltoy.calpoly.edu.movierecs.Constants.ADV_SRC_SPLIT_SPAN;
+
 /**
  * Created by connor on 10/28/16.
  */
@@ -91,6 +93,10 @@ public class GridFragment extends Fragment {
         spanCount = (metrics.widthPixels / metrics.densityDpi) % PREF_TILE_SIZE;
         setSpanCount();
 
+        //This is for advanced search where we want 1 less span count
+        if (getArguments().containsKey(ADV_SRC_SPLIT_SPAN) && spanCount > DEFAULT_VERT_SPAN_COUNT) {
+            spanCount--;
+        }
         if (getArguments().containsKey(SPAN_COUNT)) {
             spanCount = args.getInt(SPAN_COUNT);
         }
