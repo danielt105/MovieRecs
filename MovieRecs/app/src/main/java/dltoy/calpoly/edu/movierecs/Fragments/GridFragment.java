@@ -30,6 +30,9 @@ import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.QueryType;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.MovieGridAdapter;
 import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.R;
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -53,6 +56,7 @@ public class GridFragment extends Fragment {
     protected int totalPages = 1;
     protected SwipeRefreshLayout srf;
     protected TextView noResults;
+    protected int spanCount;
 
     public GridFragment() {
         movies = new ArrayList<>();
@@ -84,15 +88,8 @@ public class GridFragment extends Fragment {
         // calculate screen width and determine tile width based on that
         DisplayMetrics metrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int spanCount = (metrics.widthPixels / metrics.densityDpi) % PREF_TILE_SIZE;
-
-        /*  make sure the tiles fit nicely on the page. There should be a minimum of two, but the
-            preferred tile size it too small to look nice on tablets, so reduce the number
-            shown on each row when there are more than 5 tiles per row... This is completely
-            done for no other reason than to look good...
-        */
-        spanCount = spanCount <= 1 ? DEFAULT_VERT_SPAN_COUNT : spanCount;
-        spanCount = spanCount >= 5 ? (int)Math.round(spanCount * TILE_NUM_RATIO) : spanCount;
+        spanCount = (metrics.widthPixels / metrics.densityDpi) % PREF_TILE_SIZE;
+        setSpanCount();
 
         if (getArguments().containsKey(SPAN_COUNT)) {
             spanCount = args.getInt(SPAN_COUNT);
@@ -104,7 +101,11 @@ public class GridFragment extends Fragment {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rv.getContext(), spanCount,
                 isHorizontal ? GridLayoutManager.HORIZONTAL : GridLayoutManager.VERTICAL, false);
         rv.setLayoutManager(gridLayoutManager);
-        rv.setAdapter(adapter);
+
+        AlphaInAnimationAdapter anim = new AlphaInAnimationAdapter(adapter);
+        anim.setDuration(1000);
+        anim.setFirstOnly(false);
+        rv.setAdapter(anim);
 
         EndlessScrollListener endlessScroll = new EndlessScrollListener(gridLayoutManager) {
             @Override
@@ -116,43 +117,6 @@ public class GridFragment extends Fragment {
         };
 
         rv.addOnScrollListener(endlessScroll);
-
-        // set the margins on each grid item
-        final boolean isH = isHorizontal;
-        /*rv.addItemDecoration(new RecyclerView.ItemDecoration() {
-            @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                int pos = parent.getChildLayoutPosition(view);
-                int edgeMargin = 16;
-                int innerMargin = edgeMargin / 2;
-
-
-                if (isH) {
-                    outRect.left = 0;
-                    outRect.right = innerMargin;
-                } else {
-                    if (pos % 2 == 0) {
-                        outRect.left = edgeMargin;
-                        outRect.right = innerMargin;
-                    } else {
-                        outRect.right = edgeMargin;
-                        outRect.left = innerMargin;
-                    }
-
-                    // check for the very top row or very bottom row which are edges
-                    if (pos == 0 || pos == 1) {
-                        outRect.top = edgeMargin;
-                        outRect.bottom = innerMargin;
-                    } else if (pos == movies.size() - 1 || pos == movies.size() - 2) {
-                        outRect.bottom = edgeMargin;
-                        outRect.top = innerMargin;
-                    } else {
-                        outRect.top = innerMargin;
-                        outRect.bottom = innerMargin;
-                    }
-                }
-            }
-        });*/
     }
 
     protected void loadContent(Bundle bundle, int page) {
@@ -194,7 +158,6 @@ public class GridFragment extends Fragment {
                 .subscribe(new Observer<ResultList<Movie>>() {
                     @Override
                     public void onCompleted() {
-                        showLoadingIcon(false);
                     }
 
                     @Override
@@ -211,10 +174,10 @@ public class GridFragment extends Fragment {
                             rv.setVisibility(View.GONE);
                         }
                         else {
+                            int len = movies.size();
                             totalPages = movieList.totalPages;
                             movies.addAll(movieList.results);
                             adapter.notifyDataSetChanged();
-                            showLoadingIcon(false);
                         }
                     }
                 });
@@ -228,5 +191,15 @@ public class GridFragment extends Fragment {
 
     public void showLoadingIcon(boolean show) {
         //srf.setRefreshing(show);
+    }
+
+    protected void setSpanCount() {
+        /*  make sure the tiles fit nicely on the page. There should be a minimum of two, but the
+            preferred tile size it too small to look nice on tablets, so reduce the number
+            shown on each row when there are more than 5 tiles per row... This is completely
+            done for no other reason than to look good...
+        */
+        spanCount = spanCount <= 1 ? DEFAULT_VERT_SPAN_COUNT : spanCount;
+        spanCount = spanCount >= 5 ? (int)Math.round(spanCount * TILE_NUM_RATIO) : spanCount;
     }
 }

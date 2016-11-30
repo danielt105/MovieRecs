@@ -73,6 +73,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     private void getMovieData(int id) {
+        // call zipwith with the api call, func2, and create an object to wrap everything in
         MainActivity.apiService.getById(id, BuildConfig.apiKey)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

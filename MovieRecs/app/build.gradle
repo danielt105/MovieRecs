@@ -25,7 +25,6 @@ android {
     buildTypes.each {
         it.buildConfigField 'String', 'apiKey', properties.getProperty('private.key')
     }
-
 }
 
 dependencies {
@@ -43,4 +42,5 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'br.com.mauker.materialsearchview:materialsearchview:1.2.0'
     compile "com.splitwise:tokenautocomplete:2.0.8@aar"
+    compile 'jp.wasabeef:recyclerview-animators:2.2.4'
 }
