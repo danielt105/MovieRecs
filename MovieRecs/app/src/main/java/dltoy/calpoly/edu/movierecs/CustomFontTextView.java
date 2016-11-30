@@ -24,7 +24,7 @@ public class CustomFontTextView extends TextView {
     }
 
     public void init() {
-        Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "font/QaskinBlack_PersonalUse.ttf");
+        Typeface tf = Typeface.createFromAsset(getContext().getAssets(), "font/chancur.ttf");
         setTypeface(tf ,1);
     }
 }

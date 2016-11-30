@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">MovieRecs</string>
+    <string name="app_name">Movie Recs</string>
     <string name="team_name">Condor and Friends</string>
     <string name="presents">presents</string>
 
     <string name="filter">Filter</string>
     <string name="top_rated">Top Rated</string>
-    <string name="latest">Latest</string>
+    <string name="latest">Release Date</string>
 
     <!--nav drawer-->
     <string name="home">Home</string>
@@ -53,7 +53,7 @@
     <string name="not_watchlist_title">Plan to Watch List</string>
     <string name="watched_list">Watched List</string>
     <string name="not_watched_list">Plan to Watch List</string>
-    <string name="both_lists">Both Lists</string>
+    <string name="sent_to">sent to</string>
 
     <!-- basic search -->
     <string name="search_label">Search</string>

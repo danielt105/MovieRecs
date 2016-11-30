@@ -162,12 +162,12 @@ public class GridFragment extends Fragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e("Grid", "got an error loading movies" + e.getMessage());
+                        Log.e("Grid", "got an error loading movies " + e.getMessage());
                     }
 
                     @Override
                     public void onNext(ResultList<Movie> movieList) {
-                        Log.e("results size: ", movieList.totalResults + "");
+//                        Log.e("results size: ", movieList.totalResults + "");
                         if (movieList.totalResults == 0) {
                             noResults.setVisibility(View.VISIBLE);
                             noResults.setGravity(View.TEXT_ALIGNMENT_CENTER);

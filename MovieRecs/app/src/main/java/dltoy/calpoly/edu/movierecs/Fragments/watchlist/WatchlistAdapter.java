@@ -18,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import dltoy.calpoly.edu.movierecs.Api.ImageUtil;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
@@ -25,14 +27,28 @@ import dltoy.calpoly.edu.movierecs.Constants;
 import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.MovieDetailsActivity;
 import dltoy.calpoly.edu.movierecs.R;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import rx.schedulers.TimeInterval;
 
 public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.WatchlistViewHolder> {
     private ArrayList<Movie> movies;
     private Context context;
+    private WatchlistEntryListener listener;
+    private boolean initState;
 
-    public WatchlistAdapter(Context context, ArrayList<Movie> entries) {
+    private static final int FADE_INTERVAL = 5;
+    private static final float ALPHA_DECREMENT = 0.005f;
+
+    public WatchlistAdapter(Context context, ArrayList<Movie> entries, boolean initState) {
         this.context = context;
         this.movies = entries;
+        this.initState = initState;
     }
 
     @Override
@@ -69,6 +85,9 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
         private CheckBox switchList;
         private ImageView img;
         public Movie movie;
+        private float initAlpha;
+        private float curAlpha;
+        private Subscription sub;
         private boolean cheat = true; //toggle this off when switching between this
 
         public WatchlistViewHolder(View itemView) {
@@ -82,6 +101,7 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
             switchList = (CheckBox) itemView.findViewById(R.id.watchlist_entry_checkbox);
             switchList.setOnCheckedChangeListener(this);
             itemView.setOnClickListener(this);
+            initAlpha = itemView.getAlpha();
 
             //resize stuff if its in on the tablet -_-
             if (MainActivity.isSplitPane()) {
@@ -104,6 +124,7 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
             cheat = false;
             switchList.setChecked(m.isWatched());
             cheat = true;
+            itemView.setAlpha(1);
             ImageUtil.insertImage(m.getImagePath(), Constants.DEFAULT_IMG_WID, img);
         }
 
@@ -121,7 +142,50 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
     //            Log.e("check changed", movie.getTitle() + " set to " + isChecked);
                 movie.setWatched(isChecked);
                 MainActivity.db.updateMovie(movie);
+                if (initState != movie.isWatched())
+                    startFade();
             }
+        }
+
+        private void startFade() {
+            curAlpha = initAlpha;
+            sub = Observable.interval(FADE_INTERVAL, TimeUnit.MILLISECONDS)
+                    .timeInterval()
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .flatMap(new Func1<TimeInterval<Long>, Observable<?>>() {
+                        @Override
+                        public Observable<?> call(TimeInterval<Long> longTimeInterval) {
+                            if (initState == movie.isWatched()) {
+                                sub.unsubscribe();
+                            }
+                            decrementAlpha();
+                            return null;
+                        }
+                    })
+                    .onErrorReturn(new Func1<Throwable, Object>() {
+                        @Override
+                        public Object call(Throwable throwable) {
+                            Log.e("Error in fade", "unsubscribing");
+                            sub.unsubscribe();
+                            return null;
+                        }
+                    })
+                    .subscribe();
+        }
+
+        public void decrementAlpha() {
+            if (initState != movie.isWatched()) {
+                curAlpha = (curAlpha > ALPHA_DECREMENT) ? curAlpha - ALPHA_DECREMENT : 0;
+                if (curAlpha <= ALPHA_DECREMENT) {
+                    listener.onWatchlistEntrySelected(movie);
+                    sub.unsubscribe();
+                }
+            }
+            else {
+                curAlpha = initAlpha;
+            }
+            itemView.setAlpha(curAlpha);
         }
 
         @Override
@@ -156,5 +220,9 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
             AlertDialog alertDialog = alertDialogBuilder.create();
             alertDialog.show();
         }
+    }
+
+    public void setWatchListEntryListener(WatchlistEntryListener listener) {
+        this.listener = listener;
     }
 }
