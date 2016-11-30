@@ -57,19 +57,20 @@ public abstract class WatchlistBaseFragment extends Fragment  {
         adapter.setWatchListEntryListener(new WatchlistEntryListener() {
             @Override
             public void onWatchlistEntrySelected(Movie m) {
-                Snackbar snackbar = Snackbar.make(list, m.getTitle() + toastMessage(), Snackbar.LENGTH_LONG);
-                snackbar.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-                snackbar.show();
-
-                //remove the movie from the list
-                for (int iter = 0; iter < movieList.size(); iter++) {
-                    if (m.equals(movieList.get(iter))) {
-                        movieList.remove(iter);
-                        adapter.notifyItemRemoved(iter);
-                        adapter.notifyItemRangeChanged(iter, movieList.size() - 1);
+                //find its ndx
+                int ndx;
+                for (ndx = 0; ndx < movieList.size(); ndx++) {
+                    if (m.equals(movieList.get(ndx))) {
                         break;
                     }
                 }
+
+                renderSnackbar(m, ndx);
+
+                //remove the movie from the list
+                movieList.remove(ndx);
+                adapter.notifyItemRemoved(ndx);
+                adapter.notifyItemRangeChanged(ndx, movieList.size());
             }
         });
         list = (RecyclerView)getView().findViewById(R.id.the_list);
@@ -96,6 +97,22 @@ public abstract class WatchlistBaseFragment extends Fragment  {
         }).attachToRecyclerView(list);
 
         setList();
+    }
+
+    private void renderSnackbar(final Movie m, final int ndx) {
+        Snackbar snackbar = Snackbar.make(list, m.getTitle() + toastMessage(), Snackbar.LENGTH_LONG);
+        snackbar.setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                m.setWatched(!m.isWatched());
+                MainActivity.db.updateMovie(m);
+                movieList.add(ndx, m);
+                adapter.notifyItemInserted(ndx);
+                adapter.notifyItemRangeChanged(ndx, movieList.size());
+            }
+        });
+        snackbar.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+        snackbar.show();
     }
 
     protected void setList() {
