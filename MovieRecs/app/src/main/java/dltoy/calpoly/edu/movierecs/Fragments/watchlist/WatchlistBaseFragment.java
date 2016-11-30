@@ -2,11 +2,14 @@ package dltoy.calpoly.edu.movierecs.Fragments.watchlist;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +25,7 @@ import java.util.Collections;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 import dltoy.calpoly.edu.movierecs.Api.MovieComparators;
 import dltoy.calpoly.edu.movierecs.MainActivity;
+import dltoy.calpoly.edu.movierecs.MovieDetailsActivity;
 import dltoy.calpoly.edu.movierecs.R;
 
 public abstract class WatchlistBaseFragment extends Fragment  {
@@ -53,10 +57,19 @@ public abstract class WatchlistBaseFragment extends Fragment  {
         adapter.setWatchListEntryListener(new WatchlistEntryListener() {
             @Override
             public void onWatchlistEntrySelected(Movie m) {
-                Toast.makeText(getActivity(), m.getTitle() + toastMessage(),
-                        Toast.LENGTH_LONG).show();
-                getList();
-                setList();
+                Snackbar snackbar = Snackbar.make(list, m.getTitle() + toastMessage(), Snackbar.LENGTH_LONG);
+                snackbar.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+                snackbar.show();
+
+                //remove the movie from the list
+                for (int iter = 0; iter < movieList.size(); iter++) {
+                    if (m.equals(movieList.get(iter))) {
+                        movieList.remove(iter);
+                        adapter.notifyItemRemoved(iter);
+                        adapter.notifyItemRangeChanged(iter, movieList.size() - 1);
+                        break;
+                    }
+                }
             }
         });
         list = (RecyclerView)getView().findViewById(R.id.the_list);
@@ -70,6 +83,17 @@ public abstract class WatchlistBaseFragment extends Fragment  {
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(list.getContext(), DividerItemDecoration.VERTICAL);
         list.addItemDecoration(dividerItemDecoration);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.DOWN) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            }
+        }).attachToRecyclerView(list);
 
         setList();
     }

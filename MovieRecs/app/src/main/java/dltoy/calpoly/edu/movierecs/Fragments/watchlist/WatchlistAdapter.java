@@ -42,7 +42,7 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
     private WatchlistEntryListener listener;
     private boolean initState;
 
-    private static final int FADE_INTERVAL = 15;
+    private static final int FADE_INTERVAL = 5;
     private static final float ALPHA_DECREMENT = 0.005f;
 
     public WatchlistAdapter(Context context, ArrayList<Movie> entries, boolean initState) {
@@ -124,7 +124,7 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
             cheat = false;
             switchList.setChecked(m.isWatched());
             cheat = true;
-            itemView.setAlpha(initAlpha);
+            itemView.setAlpha(1);
             ImageUtil.insertImage(m.getImagePath(), Constants.DEFAULT_IMG_WID, img);
         }
 

@@ -1,5 +1,7 @@
 package dltoy.calpoly.edu.movierecs.Api.Models;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.text.ParseException;
@@ -107,5 +109,17 @@ public class Movie {
 
     public List<Genre> getGenres() {
         return genres;
+    }
+
+    public boolean equals(Movie other) {
+        if (other == null)
+            return false;
+        return (this.id == other.id &&
+                this.title.equals(other.getTitle()) &&
+                this.imagePath.equals(other.getImagePath()) &&
+                this.description.equals(other.getDescription()) &&
+                this.rating == other.getRating() &&
+                this.getDate().equals(other.getDate()) &&
+                this.runtime == other.getRuntime());
     }
 }

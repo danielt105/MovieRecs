@@ -16,7 +16,7 @@ public class NotWatchedFragment extends WatchlistBaseFragment {
     }
 
     protected String toastMessage() {
-        return getResources().getString(R.string.sent_to) +
+        return " " + getResources().getString(R.string.sent_to) + " " +
                 getResources().getString(R.string.watched_list);
     }
 }
