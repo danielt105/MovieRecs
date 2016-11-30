@@ -173,6 +173,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        if (!(getSupportFragmentManager().findFragmentById(R.id.content) instanceof GridFragment))
+            return true;
+
         getMenuInflater().inflate(R.menu.options, menu);
 
         final MaterialSearchView searchView = (MaterialSearchView) findViewById(R.id.search_view);

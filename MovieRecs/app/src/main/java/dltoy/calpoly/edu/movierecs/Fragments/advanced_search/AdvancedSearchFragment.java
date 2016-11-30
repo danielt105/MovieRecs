@@ -62,6 +62,7 @@ public class AdvancedSearchFragment extends Fragment /*implements TokenCompleteT
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
+        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.advanced_search, container, false);
     }
 
