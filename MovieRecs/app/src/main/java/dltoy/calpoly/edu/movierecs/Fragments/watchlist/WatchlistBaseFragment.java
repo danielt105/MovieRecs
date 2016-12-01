@@ -144,14 +144,9 @@ public abstract class WatchlistBaseFragment extends Fragment  {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        getList();
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
+        getList();
         setList();
     }
 }
