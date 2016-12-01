@@ -33,6 +33,7 @@ import dltoy.calpoly.edu.movierecs.R;
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
 import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
+import jp.wasabeef.recyclerview.adapters.SlideInLeftAnimationAdapter;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -108,8 +109,8 @@ public class GridFragment extends Fragment {
                 isHorizontal ? GridLayoutManager.HORIZONTAL : GridLayoutManager.VERTICAL, false);
         rv.setLayoutManager(gridLayoutManager);
 
-        AlphaInAnimationAdapter anim = new AlphaInAnimationAdapter(adapter);
-        anim.setDuration(1000);
+        ScaleInAnimationAdapter anim = new ScaleInAnimationAdapter(adapter);
+        anim.setDuration(350);
         anim.setFirstOnly(false);
         rv.setAdapter(anim);
 
@@ -173,7 +174,6 @@ public class GridFragment extends Fragment {
 
                     @Override
                     public void onNext(ResultList<Movie> movieList) {
-//                        Log.e("results size: ", movieList.totalResults + "");
                         if (movieList.totalResults == 0) {
                             noResults.setVisibility(View.VISIBLE);
                             noResults.setGravity(View.TEXT_ALIGNMENT_CENTER);
@@ -183,7 +183,7 @@ public class GridFragment extends Fragment {
                             int len = movies.size();
                             totalPages = movieList.totalPages;
                             movies.addAll(movieList.results);
-                            adapter.notifyDataSetChanged();
+                            adapter.notifyItemRangeInserted(len, len + movieList.results.size());
                         }
                     }
                 });
