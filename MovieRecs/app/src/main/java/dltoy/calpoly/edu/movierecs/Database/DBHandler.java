@@ -10,6 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import dltoy.calpoly.edu.movierecs.Api.DateConverter;
 import dltoy.calpoly.edu.movierecs.Api.Models.Genre;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 
@@ -26,6 +27,7 @@ public class DBHandler extends SQLiteOpenHelper {
     private static final String KEY_RATING = "rating";
     private static final String KEY_DESC = "description";
     private static final String KEY_RELEASE = "releaseDate";
+    private static final String KEY_DATE_ADDED = "dateAdded";
 
     //genre db
     private static final String TABLE_GENERES = "genres";
@@ -45,7 +47,8 @@ public class DBHandler extends SQLiteOpenHelper {
                 KEY_WATCHED + " INTEGER," +
                 KEY_RATING + " TEXT," +
                 KEY_DESC + " TEXT," +
-                KEY_RELEASE + " TEXT" + ")";
+                KEY_RELEASE + " TEXT," +
+                KEY_DATE_ADDED + " TEXT " + ")";
         db.execSQL(CREATE_MOVIE_TABLE);
 
         String CREATE_GENRE_TABLE = "CREATE TABLE " + TABLE_GENERES + "(" +
@@ -75,6 +78,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(KEY_RATING, movie.getRating() + "");
         values.put(KEY_DESC, movie.getDescription());
         values.put(KEY_RELEASE, movie.getRawDate());
+        values.put(KEY_DATE_ADDED, DateConverter.getCurrentDateString());
 
         db.insert(TABLE_MOVIES, null, values);
         db.close();
@@ -98,6 +102,7 @@ public class DBHandler extends SQLiteOpenHelper {
         movie.setRating(Float.parseFloat(cursor.getString(5)));
         movie.setDescription(cursor.getString(6));
         movie.setRawDate(cursor.getString(7));
+        movie.setDateAdded(DateConverter.stringToDate(cursor.getString(8)));
         return movie;
     }
 
@@ -132,6 +137,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 movie.setRating(Float.parseFloat(cursor.getString(5)));
                 movie.setDescription(cursor.getString(6));
                 movie.setRawDate(cursor.getString(7));
+                movie.setDateAdded(DateConverter.stringToDate(cursor.getString(8)));
 
                 watchlist.add(movie);
             } while (cursor.moveToNext());
@@ -151,6 +157,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(KEY_RATING, movie.getRating());
         values.put(KEY_DESC, movie.getDescription());
         values.put(KEY_RELEASE, movie.getRawDate());
+        values.put(KEY_DATE_ADDED, DateConverter.dateToString(movie.getDateAdded()));
 
         return db.update(TABLE_MOVIES, values, KEY_ID + " = ?",
                 new String[] { String.valueOf(movie.getDbid()) });

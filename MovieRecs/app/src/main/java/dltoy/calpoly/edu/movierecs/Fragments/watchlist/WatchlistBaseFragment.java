@@ -35,6 +35,8 @@ public abstract class WatchlistBaseFragment extends Fragment  {
     protected RecyclerView list;
     protected TextView emptyList;
 
+    private int sorter = 0; //0 default: releasedate, 1: toprated, 2: latest
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -74,6 +76,7 @@ public abstract class WatchlistBaseFragment extends Fragment  {
                 adapter.notifyItemRemoved(ndx);
                 adapter.notifyItemRangeChanged(ndx, movieList.size());
                 checkEmptyList();
+                sortList();
             }
         });
         list = (RecyclerView)getView().findViewById(R.id.the_list);
@@ -110,11 +113,13 @@ public abstract class WatchlistBaseFragment extends Fragment  {
             @Override
             public void onClick(View view) {
                 m.setWatched(!m.isWatched());
+                m.setDateAdded(m.getLastDate());
                 MainActivity.db.updateMovie(m);
                 movieList.add(ndx, m);
                 adapter.notifyItemInserted(ndx);
                 adapter.notifyItemRangeChanged(ndx, movieList.size());
                 checkEmptyList();
+                sortList();
             }
         });
         snackbar.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
@@ -122,7 +127,6 @@ public abstract class WatchlistBaseFragment extends Fragment  {
     }
 
     private void checkEmptyList() {
-        Log.e("movie list size", "" + movieList.size());
         if (movieList.size() == 0) {
             emptyList.setVisibility(View.VISIBLE);
             emptyList.setText(getEmptyListMessage());
@@ -132,8 +136,24 @@ public abstract class WatchlistBaseFragment extends Fragment  {
         }
     }
 
+    private void sortList() {
+        if (movieList.size() > 0) {
+            switch(sorter) {
+                case 1:
+                    Collections.sort(movieList, MovieComparators.topRated);
+                    break;
+                case 2:
+                    Collections.sort(movieList, MovieComparators.recent);
+                    break;
+                default: //default is 0
+                    Collections.sort(movieList, MovieComparators.addedToList);
+            }
+        }
+    }
+
     protected void setList() {
         checkEmptyList();
+        sortList();
 
         adapter.setMovies(movieList);
         adapter.notifyDataSetChanged();
@@ -150,15 +170,20 @@ public abstract class WatchlistBaseFragment extends Fragment  {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.date_added:
+                sorter = 0;
+                setList();
+                break;
             case R.id.top_rated:
-                Collections.sort(movieList, MovieComparators.topRated);
+                sorter = 1;
                 setList();
                 break;
             case R.id.latest:
-                Collections.sort(movieList, MovieComparators.recent);
+                sorter = 2;
                 setList();
                 break;
             default:
+                sorter = 0;
                 Log.e("Filter Menu", "Couldn't find specified id");
         }
         return true;

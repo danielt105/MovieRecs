@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import dltoy.calpoly.edu.movierecs.Api.DateConverter;
 import dltoy.calpoly.edu.movierecs.Api.ImageUtil;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 import dltoy.calpoly.edu.movierecs.Constants;
@@ -141,6 +142,8 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
             if (cheat) {
     //            Log.e("check changed", movie.getTitle() + " set to " + isChecked);
                 movie.setWatched(isChecked);
+                movie.setLastDate(movie.getDateAdded());
+                movie.setDateAdded(DateConverter.getCurrentDate());
                 MainActivity.db.updateMovie(movie);
                 if (initState != movie.isWatched())
                     startFade();

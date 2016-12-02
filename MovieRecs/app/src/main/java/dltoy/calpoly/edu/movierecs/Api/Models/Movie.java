@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -23,6 +22,8 @@ public class Movie {
 
     private int dbid;
     private boolean isWatched;
+    private Date dateAdded;
+    private Date lastDate; //This is only for undo when changing lists
 
     public int getDbid() {
         return dbid;
@@ -109,6 +110,22 @@ public class Movie {
 
     public List<Genre> getGenres() {
         return genres;
+    }
+
+    public Date getDateAdded() {
+        return dateAdded;
+    }
+
+    public void setDateAdded(Date newDate) {
+        dateAdded = newDate;
+    }
+
+    public Date getLastDate() {
+        return lastDate;
+    }
+
+    public void setLastDate(Date lastDate) {
+        this.lastDate = lastDate;
     }
 
     public boolean equals(Movie other) {
