@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public abstract class WatchlistBaseFragment extends Fragment  {
     protected WatchlistAdapter adapter;
     protected ArrayList<Movie> movieList;
     protected RecyclerView list;
+    protected TextView emptyList;
 
     @Nullable
     @Override
@@ -71,6 +73,7 @@ public abstract class WatchlistBaseFragment extends Fragment  {
                 movieList.remove(ndx);
                 adapter.notifyItemRemoved(ndx);
                 adapter.notifyItemRangeChanged(ndx, movieList.size());
+                checkEmptyList();
             }
         });
         list = (RecyclerView)getView().findViewById(R.id.the_list);
@@ -96,6 +99,8 @@ public abstract class WatchlistBaseFragment extends Fragment  {
             }
         }).attachToRecyclerView(list);
 
+        emptyList = (TextView)getView().findViewById(R.id.empty_list);
+
         setList();
     }
 
@@ -109,13 +114,27 @@ public abstract class WatchlistBaseFragment extends Fragment  {
                 movieList.add(ndx, m);
                 adapter.notifyItemInserted(ndx);
                 adapter.notifyItemRangeChanged(ndx, movieList.size());
+                checkEmptyList();
             }
         });
         snackbar.getView().setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
         snackbar.show();
     }
 
+    private void checkEmptyList() {
+        Log.e("movie list size", "" + movieList.size());
+        if (movieList.size() == 0) {
+            emptyList.setVisibility(View.VISIBLE);
+            emptyList.setText(getEmptyListMessage());
+        }
+        else {
+            emptyList.setVisibility(View.GONE);
+        }
+    }
+
     protected void setList() {
+        checkEmptyList();
+
         adapter.setMovies(movieList);
         adapter.notifyDataSetChanged();
     }
@@ -125,6 +144,8 @@ public abstract class WatchlistBaseFragment extends Fragment  {
     protected abstract boolean getInitCheckState();
 
     protected abstract String toastMessage();
+
+    protected abstract String getEmptyListMessage();
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -55,6 +55,7 @@
     <string name="not_watched_list">Plan to Watch List</string>
     <string name="sent_to">sent to</string>
     <string name="undo">UNDO</string>
+    <string name="empty_list">You dont have anything here!</string>
 
     <!-- basic search -->
     <string name="search_label">Search</string>
