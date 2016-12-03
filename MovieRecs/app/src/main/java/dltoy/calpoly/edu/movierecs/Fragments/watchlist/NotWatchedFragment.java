@@ -19,4 +19,8 @@ public class NotWatchedFragment extends WatchlistBaseFragment {
         return "\n" + getResources().getString(R.string.sent_to) + " " +
                 getResources().getString(R.string.watched_list);
     }
+
+    protected String getEmptyListMessage() {
+        return getResources().getString(R.string.empty_list);
+    }
 }

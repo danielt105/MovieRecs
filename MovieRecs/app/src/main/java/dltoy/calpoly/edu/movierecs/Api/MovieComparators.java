@@ -18,4 +18,11 @@ public class MovieComparators {
             return rhs.getDate().compareTo(lhs.getDate());
         }
     };
+
+    public static Comparator<Movie> addedToList = new Comparator<Movie>() {
+        @Override
+        public int compare(Movie lhs, Movie rhs) {
+            return rhs.getDateAdded().compareTo(lhs.getDateAdded());
+        }
+    };
 }
