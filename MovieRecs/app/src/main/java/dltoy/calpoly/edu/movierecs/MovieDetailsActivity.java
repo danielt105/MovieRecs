@@ -224,10 +224,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
                     }
                 });
 
-                // set the the movie poster
-                //ImageView imageView = (ImageView) findViewById(R.id.details_poster);
-                //Picasso.with(MovieDetailsActivity.this).load(ImageUtil.createImageURL(movie.getImagePath(), 300)).into(imageView);
-
                 // set recommendations for the movie
                 GridFragment gf = new GridFragment();
                 Bundle bundle = new Bundle();
