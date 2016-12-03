@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
         setContentView(R.layout.activity_main);
         pref = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -93,7 +92,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         db = new DBHandler(this);
 
         curFragId = savedInstanceState == null ? -1 : savedInstanceState.getInt(Constants.CUR_FRAG_KEY);
-        switchToFragment(curFragId == -1 ? R.id.home : curFragId);
+
+        Fragment cur = getSupportFragmentManager().findFragmentById(R.id.content);
+        if (cur == null) {
+            switchToFragment(curFragId == -1 ? R.id.home : curFragId);
+        } else {
+            cur.setRetainInstance(false);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        if (isChangingConfigurations()) {
+            Fragment f = getSupportFragmentManager().findFragmentById(R.id.content);
+            if (f != null) {
+                f.setRetainInstance(true);
+            }
+        }
+
+        super.onStop();
     }
 
     //Switches the fragment in the activity

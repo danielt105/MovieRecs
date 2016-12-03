@@ -57,7 +57,6 @@ public class GridFragment extends Fragment {
     protected List<Movie> movies;
     protected MovieGridAdapter adapter;
     protected int totalPages = 1;
-    protected SwipeRefreshLayout srf;
     protected TextView noResults;
     protected int spanCount;
 
@@ -158,6 +157,8 @@ public class GridFragment extends Fragment {
                 break;
         }
     }
+
+
 
     protected void setUpRequest(Observable<ResultList<Movie>> obs) {
         obs.subscribeOn(Schedulers.io())
