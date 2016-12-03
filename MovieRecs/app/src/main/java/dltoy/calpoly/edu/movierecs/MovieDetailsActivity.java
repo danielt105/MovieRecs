@@ -1,6 +1,9 @@
 package dltoy.calpoly.edu.movierecs;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -10,13 +13,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.List;
 
 import dltoy.calpoly.edu.movierecs.Api.ImageUtil;
@@ -32,6 +38,9 @@ import rx.schedulers.Schedulers;
 
 public class MovieDetailsActivity extends AppCompatActivity {
     public static final String MOVIE_ID_EXTRA = "MOVIE_ID_EXTRA";
+    public static final String TRANSITION_NAME = "TRANSITION_NAME";
+    public static final String IMAGE_DATA = "IMAGE_DATA";
+
     private Movie model;
     private Menu menu;
     private int fragToReturnTo;
@@ -40,9 +49,49 @@ public class MovieDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setupTheme();
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movie_details);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+        }
+
+        setContentView(R.layout.activity_movie_details);
         setTitle(getString(R.string.movie_details_title));
+        //supportPostponeEnterTransition();
+
+        final ImageView iv = (ImageView) findViewById(R.id.details_poster);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            iv.setTransitionName(getIntent().getStringExtra(TRANSITION_NAME));
+        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final Bitmap bitmap = Picasso.with(MovieDetailsActivity.this)
+                            .load(getIntent().getStringExtra(IMAGE_DATA))
+                            .networkPolicy(NetworkPolicy.OFFLINE)
+                            .get();
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            iv.setImageBitmap(bitmap);
+                        }
+                    });
+                } catch (IOException ioe) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            iv.setImageDrawable(ContextCompat.getDrawable(MovieDetailsActivity.this,
+                                    R.drawable.movie_placeholder));
+                            Toast.makeText(MovieDetailsActivity.this,
+                                    "Could not get image", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                //startPostponedEnterTransition();
+            }
+        }).start();
 
         int id = getIntent().getIntExtra(MOVIE_ID_EXTRA, 0);
         getMovieData(id);
@@ -55,11 +104,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -181,8 +225,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
                 });
 
                 // set the the movie poster
-                ImageView imageView = (ImageView) findViewById(R.id.details_poster);
-                Picasso.with(MovieDetailsActivity.this).load(ImageUtil.createImageURL(movie.getImagePath(), 300)).into(imageView);
+                //ImageView imageView = (ImageView) findViewById(R.id.details_poster);
+                //Picasso.with(MovieDetailsActivity.this).load(ImageUtil.createImageURL(movie.getImagePath(), 300)).into(imageView);
 
                 // set recommendations for the movie
                 GridFragment gf = new GridFragment();

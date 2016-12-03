@@ -1,5 +1,6 @@
 package dltoy.calpoly.edu.movierecs.Fragments.grid_recycler;
 
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,9 +21,11 @@ import dltoy.calpoly.edu.movierecs.R;
 public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridViewHolder> {
     private List<Movie> movies;
     private boolean isHorizontal;
+    private Fragment frag;
 
-    public MovieGridAdapter(List<Movie> entries) {
+    public MovieGridAdapter(List<Movie> entries, Fragment frag) {
         this.movies = entries;
+        this.frag = frag;
     }
 
     @Override
@@ -38,7 +41,7 @@ public class MovieGridAdapter extends RecyclerView.Adapter<MovieGridViewHolder> 
             v.setLayoutParams(new FrameLayout.LayoutParams((int)(parent.getMeasuredWidth() / 3.5), FrameLayout.LayoutParams.WRAP_CONTENT));
         }
 
-        return new MovieGridViewHolder(v);
+        return new MovieGridViewHolder(v, frag);
     }
 
     @Override

@@ -63,7 +63,7 @@ public class GridFragment extends Fragment {
 
     public GridFragment() {
         movies = new ArrayList<>();
-        adapter = new MovieGridAdapter(movies);
+        adapter = new MovieGridAdapter(movies, this);
     }
 
     @Override
