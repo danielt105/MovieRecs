@@ -1,5 +1,7 @@
 package dltoy.calpoly.edu.movierecs;
 
+import dltoy.calpoly.edu.movierecs.Fragments.GridFragment;
+
 public class Constants {
     public static final String THEME_KEY = "current theme :D";
 
@@ -10,13 +12,15 @@ public class Constants {
     public static final String KEYWORD_SEARCH = "keywordzzz";
     public static final String CAST_SEARCH = "casts";
     public static final String SAVED_SEARCH = "saving stuffs";
+    public static final String IS_SEARCHING = "searching for stuff";
+    public static final String TOOLBAR_TITLE = "toolbar title";
 
     public static final String ADV_SRC_SPLIT_SPAN = "one less";
 
     public static final int MAX_MOVIE_RATING = 10;
     public static final int QUERY_PARAM_COUNT = 6;
 
-    public static final int DEFAULT_IMG_WID = 300;
+    public static final int DEFAULT_IMG_WID = GridFragment.PREF_TILE_SIZE;
 
     public static final float ADV_SRC_RATIO = 0.45f;
     public static final float DEFAULT_RATIO = 1.0f;

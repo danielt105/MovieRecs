@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private int curFragId;
     private SharedPreferences pref;
     private Menu menu;
+    private boolean isSearching = false;
 
     private AdvSearch savedSearch;
     private boolean sentSearch = false;
@@ -91,7 +92,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         apiService = MovieClient.getClient().create(MovieApi.class);
         db = new DBHandler(this);
 
-        curFragId = savedInstanceState == null ? -1 : savedInstanceState.getInt(Constants.CUR_FRAG_KEY);
+        if (savedInstanceState == null) {
+            curFragId = -1;
+            isSearching = false;
+        } else {
+            isSearching = savedInstanceState.getBoolean(Constants.IS_SEARCHING);
+            curFragId = savedInstanceState.getInt(Constants.CUR_FRAG_KEY);
+            toolbar.setTitle(savedInstanceState.getString(Constants.TOOLBAR_TITLE));
+        }
 
         Fragment cur = getSupportFragmentManager().findFragmentById(R.id.content);
         if (cur == null) {
@@ -177,6 +185,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(Constants.CUR_FRAG_KEY, curFragId);
+        outState.putBoolean(Constants.IS_SEARCHING, isSearching);
+        outState.putString(Constants.TOOLBAR_TITLE, toolbar.getTitle().toString());
     }
 
     @Override
@@ -217,23 +227,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             .subscribe(new Observer<ResultList<Movie>>() {
                                 @Override
                                 public void onCompleted() {
+                                    isSearching = true;
                                     searchView.closeSearch();
-                                    gf.showLoadingIcon(false);
-
-                                    MenuItem clear = menu.add(R.string.clear_results);
-                                    clear.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-                                    clear.setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.clear));
-                                    clear.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                                        @Override
-                                        public boolean onMenuItemClick(MenuItem item) {
-                                            gf.resetFragment();
-
-                                            menu.close();
-                                            menu.removeItem(item.getItemId());
-                                            toolbar.setTitle(getString(R.string.home));
-                                            return false;
-                                        }
-                                    });
+                                    createClearMenuItem();
                                 }
 
                                 @Override
@@ -241,7 +237,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     Toast.makeText(MainActivity.this,
                                             getString(R.string.movie_search_error) + query,
                                             Toast.LENGTH_LONG).show();
-                                    gf.showLoadingIcon(false);
                                     searchView.closeSearch();
                                 }
 
@@ -303,6 +298,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
+
+        if (isSearching) {
+            createClearMenuItem();
+        }
 
         return true;
     }
@@ -453,5 +452,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static boolean isSplitPane() {
         return splitable;
+    }
+
+    private void createClearMenuItem() {
+        MenuItem clear = menu.add(R.string.clear_results);
+        clear.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        clear.setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.clear));
+        clear.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                ((GridFragment)getSupportFragmentManager().findFragmentById(R.id.content)).resetFragment();
+
+                menu.close();
+                menu.removeItem(item.getItemId());
+                toolbar.setTitle(getString(R.string.home));
+                isSearching = false;
+                return false;
+            }
+        });
     }
 }
