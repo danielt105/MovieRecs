@@ -2,9 +2,7 @@ package dltoy.calpoly.edu.movierecs;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -23,7 +21,6 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -59,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private int curFragId;
     private SharedPreferences pref;
+    private Menu menu;
 
     private AdvSearch savedSearch;
     private boolean sentSearch = false;
@@ -177,7 +175,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        this.menu = menu;
         if (!(getSupportFragmentManager().findFragmentById(R.id.content) instanceof GridFragment))
             return true;
 
@@ -203,6 +202,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 public void onCompleted() {
                                     searchView.closeSearch();
                                     gf.showLoadingIcon(false);
+
+                                    MenuItem clear = menu.add(R.string.clear_results);
+                                    clear.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                                    clear.setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.clear));
+                                    clear.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                                        @Override
+                                        public boolean onMenuItemClick(MenuItem item) {
+                                            gf.resetFragment();
+
+                                            menu.close();
+                                            menu.removeItem(item.getItemId());
+                                            toolbar.setTitle(getString(R.string.home));
+                                            return false;
+                                        }
+                                    });
                                 }
 
                                 @Override
@@ -422,9 +436,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static boolean isSplitPane() {
         return splitable;
-    }
-
-    public static void deleteFromDb(Movie movie) {
-        db.deleteMovie(movie);
     }
 }

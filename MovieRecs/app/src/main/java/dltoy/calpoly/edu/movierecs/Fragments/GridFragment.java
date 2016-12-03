@@ -195,6 +195,15 @@ public class GridFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    public void resetFragment() {
+        movies.clear();
+        adapter.notifyDataSetChanged();
+
+        Bundle bundle = new Bundle();
+        bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_TOP_RATED);
+        loadContent(bundle, 1);
+    }
+
     public void showLoadingIcon(boolean show) {
         //srf.setRefreshing(show);
     }
