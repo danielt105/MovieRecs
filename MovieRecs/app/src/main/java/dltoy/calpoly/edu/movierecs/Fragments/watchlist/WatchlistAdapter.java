@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,6 +27,7 @@ import dltoy.calpoly.edu.movierecs.Api.DateConverter;
 import dltoy.calpoly.edu.movierecs.Api.ImageUtil;
 import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 import dltoy.calpoly.edu.movierecs.Constants;
+import dltoy.calpoly.edu.movierecs.Fragments.GridFragment;
 import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.MovieDetailsActivity;
 import dltoy.calpoly.edu.movierecs.R;
@@ -134,7 +137,21 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
             Intent details = new Intent(v.getContext(), MovieDetailsActivity.class);
             details.putExtra(MovieDetailsActivity.MOVIE_ID_EXTRA, movie.getId());
             details.putExtra(Constants.CUR_FRAG_KEY, R.id.watchlist);
-            ((Activity)context).startActivityForResult(details, Constants.PREV_FRAG_KEY);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                String transName = "poster" + System.currentTimeMillis();
+                img.setTransitionName(transName);
+                details.putExtra(MovieDetailsActivity.TRANSITION_NAME, transName);
+
+                details.putExtra(MovieDetailsActivity.IMAGE_DATA,
+                        ImageUtil.createImageURL(movie.getImagePath(), GridFragment.PREF_TILE_SIZE));
+
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation(((Activity) context), img, transName);
+                ((Activity) context).startActivityForResult(details, Constants.PREV_FRAG_KEY, options.toBundle());
+            } else {
+                ((Activity) context).startActivityForResult(details, Constants.PREV_FRAG_KEY);
+            }
         }
 
         @Override
