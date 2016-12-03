@@ -76,6 +76,7 @@
     <string name="cast_label">Cast</string>
     <string name="crew">Crew</string>
     <string name="not_available_short">N/A</string>
+    <string name="not_avail_long">Not Available</string>
     <string-array name="theme_options">
         <item>Default</item>
         <item>Cru Gold :D</item>

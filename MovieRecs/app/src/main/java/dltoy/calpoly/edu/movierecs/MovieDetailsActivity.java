@@ -150,7 +150,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Throwable e) {
-                        Toast.makeText(MovieDetailsActivity.this, "Could not get cast and crew", Toast.LENGTH_LONG).show();
+                        ((TextView) findViewById(R.id.details_cast)).setText(R.string.not_avail_long);
+                        ((TextView) findViewById(R.id.details_crew)).setText(R.string.not_avail_long);
                     }
 
                     @Override
