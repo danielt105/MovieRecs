@@ -51,7 +51,9 @@ public class GridFragment extends Fragment {
     public static final int DEFAULT_HORIZ_SPAN_COUNT = 1;
     public static final int DEFAULT_VERT_SPAN_COUNT = 2;
     public static final int PREF_TILE_SIZE = 500;
+
     private static final double TILE_NUM_RATIO = 0.625;
+    private static final String RELOAD_CONTENT = "RELOAD_CONTENT";
 
     protected RecyclerView rv;
     protected List<Movie> movies;
@@ -59,6 +61,8 @@ public class GridFragment extends Fragment {
     protected int totalPages = 1;
     protected TextView noResults;
     protected int spanCount;
+    private boolean shouldReload = true;
+    private boolean isSearch = false;
 
     public GridFragment() {
         movies = new ArrayList<>();
@@ -77,7 +81,15 @@ public class GridFragment extends Fragment {
         /*srf = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
         srf.setEnabled(false);*/
         //showLoadingIcon(true);
-        loadContent(getArguments(), 1);
+
+        if (savedInstanceState != null) {
+            shouldReload = savedInstanceState.getBoolean(RELOAD_CONTENT);
+        }
+
+        if (shouldReload) {
+            shouldReload = false;
+            loadContent(getArguments(), 1);
+        }
 
         Bundle args = getArguments();
         boolean isHorizontal = false;
@@ -113,16 +125,26 @@ public class GridFragment extends Fragment {
         anim.setFirstOnly(false);
         rv.setAdapter(anim);
 
-        EndlessScrollListener endlessScroll = new EndlessScrollListener(gridLayoutManager) {
+        if (!isSearch) {
+            addEndlessScrollListener(rv);
+        }
+    }
+
+    private void addEndlessScrollListener(RecyclerView rv) {
+        rv.addOnScrollListener(new EndlessScrollListener((GridLayoutManager)rv.getLayoutManager()) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 if (page < totalPages) {
                     loadContent(getArguments(), page);
                 }
             }
-        };
+        });
+    }
 
-        rv.addOnScrollListener(endlessScroll);
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(RELOAD_CONTENT, shouldReload);
     }
 
     protected void loadContent(Bundle bundle, int page) {
@@ -188,6 +210,14 @@ public class GridFragment extends Fragment {
                         }
                     }
                 });
+    }
+
+    public void setIsSearching(boolean isSearching) {
+        if (isSearching) {
+            rv.clearOnScrollListeners();
+        } else {
+            addEndlessScrollListener(rv);
+        }
     }
 
     public void resetMovies(List<Movie> movies) {

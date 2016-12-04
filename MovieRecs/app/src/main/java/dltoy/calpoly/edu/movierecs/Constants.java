@@ -12,6 +12,7 @@ public class Constants {
     public static final String KEYWORD_SEARCH = "keywordzzz";
     public static final String CAST_SEARCH = "casts";
     public static final String SAVED_SEARCH = "saving stuffs";
+    public static final String REMEMBER_SEARCH = "remember search";
     public static final String IS_SEARCHING = "searching for stuff";
     public static final String TOOLBAR_TITLE = "toolbar title";
 

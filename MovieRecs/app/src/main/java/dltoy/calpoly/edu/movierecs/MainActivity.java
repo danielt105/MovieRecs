@@ -92,11 +92,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         apiService = MovieClient.getClient().create(MovieApi.class);
         db = new DBHandler(this);
 
+        savedSearch = (AdvSearch) getLastCustomNonConfigurationInstance();
+
         if (savedInstanceState == null) {
             curFragId = -1;
             isSearching = false;
+            sentSearch = false;
         } else {
             isSearching = savedInstanceState.getBoolean(Constants.IS_SEARCHING);
+            sentSearch = savedInstanceState.getBoolean(Constants.REMEMBER_SEARCH);
+
             curFragId = savedInstanceState.getInt(Constants.CUR_FRAG_KEY);
             toolbar.setTitle(savedInstanceState.getString(Constants.TOOLBAR_TITLE));
         }
@@ -119,6 +124,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         super.onStop();
+    }
+
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return savedSearch;
     }
 
     //Switches the fragment in the activity
@@ -186,6 +196,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onSaveInstanceState(outState);
         outState.putInt(Constants.CUR_FRAG_KEY, curFragId);
         outState.putBoolean(Constants.IS_SEARCHING, isSearching);
+        outState.putBoolean(Constants.REMEMBER_SEARCH, sentSearch);
         outState.putString(Constants.TOOLBAR_TITLE, toolbar.getTitle().toString());
     }
 
@@ -217,7 +228,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 if (frag instanceof GridFragment) {
                     final GridFragment gf = (GridFragment) frag;
-                    gf.showLoadingIcon(true);
 
                     toolbar.setTitle(getString(R.string.search_header) + query);
 
@@ -228,6 +238,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 @Override
                                 public void onCompleted() {
                                     isSearching = true;
+                                    gf.setIsSearching(true);
+
                                     searchView.closeSearch();
                                     createClearMenuItem();
                                 }
@@ -461,7 +473,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         clear.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                ((GridFragment)getSupportFragmentManager().findFragmentById(R.id.content)).resetFragment();
+                GridFragment gf = (GridFragment)getSupportFragmentManager().findFragmentById(R.id.content);
+                gf.resetFragment();
+                gf.setIsSearching(false);
 
                 menu.close();
                 menu.removeItem(item.getItemId());
