@@ -21,7 +21,7 @@ public class Constants {
     public static final int MAX_MOVIE_RATING = 10;
     public static final int QUERY_PARAM_COUNT = 6;
 
-    public static final int DEFAULT_IMG_WID = GridFragment.PREF_TILE_SIZE;
+    public static final int DEFAULT_IMG_WID = 300;
 
     public static final float ADV_SRC_RATIO = 0.45f;
     public static final float DEFAULT_RATIO = 1.0f;
