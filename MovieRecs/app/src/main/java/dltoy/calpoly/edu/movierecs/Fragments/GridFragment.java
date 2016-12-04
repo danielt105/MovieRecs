@@ -229,6 +229,7 @@ public class GridFragment extends Fragment {
     public void resetFragment() {
         movies.clear();
         adapter.notifyDataSetChanged();
+        totalPages = 1;
 
         Bundle bundle = new Bundle();
         bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_TOP_RATED);
