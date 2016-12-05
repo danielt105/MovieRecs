@@ -17,7 +17,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -142,7 +141,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     GridFragment gf = new GridFragment();
                     Bundle bundle = new Bundle();
 
-                    bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_TOP_RATED);
+                    bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_UPCOMING);
+                    bundle.putBoolean(Constants.IS_HOME, true);
                     gf.setArguments(bundle);
 
                     loadFragment(R.string.home, R.id.movie_grid, gf);
@@ -229,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (frag instanceof GridFragment) {
                     final GridFragment gf = (GridFragment) frag;
 
+                    toggleMenuItems(false);
                     toolbar.setTitle(getString(R.string.search_header) + query);
 
                     apiService.searchByTitle(BuildConfig.apiKey, query)
@@ -473,8 +474,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         clear.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
+                toggleMenuItems(true);
                 GridFragment gf = (GridFragment)getSupportFragmentManager().findFragmentById(R.id.content);
-                gf.resetFragment();
+                gf.resetFragment(QueryType.QUERY_UPCOMING);
                 gf.setIsSearching(false);
 
                 menu.close();
@@ -484,5 +486,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return false;
             }
         });
+    }
+
+    private void toggleMenuItems(boolean on) {
+        if (on) {
+            menu.add(R.id.upcoming, Menu.FIRST, Menu.NONE, R.string.upcoming);
+            menu.add(R.id.now_playing, Menu.FIRST + 1, Menu.NONE, R.string.now_playing);
+            menu.add(R.id.popular, Menu.FIRST + 2, Menu.NONE, R.string.popular);
+            menu.add(R.id.top_rated, Menu.FIRST + 3, Menu.NONE, R.string.top_rated);
+        }
+        else {
+            menu.removeItem(R.id.upcoming);
+            menu.removeItem(R.id.now_playing);
+            menu.removeItem(R.id.popular);
+            menu.removeItem(R.id.top_rated);
+        }
     }
 }

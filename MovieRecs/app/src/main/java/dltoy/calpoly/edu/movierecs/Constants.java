@@ -34,4 +34,6 @@ public class Constants {
     public static final int SPLASH_TEAM_NAME = 16;
     public static final int SPLASH_TEXT_SIZE = 24;
     public static final int SPLASH_PRESENTS = SPLASH_TEXT_SIZE / 2;
+
+    public static final String IS_HOME = "tadaima";
 }

@@ -1,20 +1,18 @@
 package dltoy.calpoly.edu.movierecs.Fragments;
 
-import android.graphics.Rect;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -24,16 +22,12 @@ import dltoy.calpoly.edu.movierecs.Api.Models.Movie;
 import dltoy.calpoly.edu.movierecs.Api.Models.ResultList;
 import dltoy.calpoly.edu.movierecs.BuildConfig;
 import dltoy.calpoly.edu.movierecs.Constants;
-import dltoy.calpoly.edu.movierecs.Fragments.advanced_search.AdvancedSearchFragment;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.EndlessScrollListener;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.QueryType;
 import dltoy.calpoly.edu.movierecs.Fragments.grid_recycler.MovieGridAdapter;
 import dltoy.calpoly.edu.movierecs.MainActivity;
 import dltoy.calpoly.edu.movierecs.R;
-import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
-import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
-import jp.wasabeef.recyclerview.adapters.SlideInLeftAnimationAdapter;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -67,6 +61,14 @@ public class GridFragment extends Fragment {
     public GridFragment() {
         movies = new ArrayList<>();
         adapter = new MovieGridAdapter(movies, this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        boolean setMenu = getArguments().getBoolean(Constants.IS_HOME, false);
+        Log.e("hasoptions menu", setMenu + "");
+        setHasOptionsMenu(setMenu);
     }
 
     @Override
@@ -151,8 +153,17 @@ public class GridFragment extends Fragment {
         int type = (int) bundle.get(QueryType.QUERY_TYPE);
 
         switch (type) {
+            case QueryType.QUERY_UPCOMING:
+                setUpRequest(MainActivity.apiService.getUpcoming(BuildConfig.apiKey, page));
+                break;
             case QueryType.QUERY_TOP_RATED:
                 setUpRequest(MainActivity.apiService.getTopRated(BuildConfig.apiKey, page));
+                break;
+            case QueryType.QUERY_NOW_PLAYING:
+                setUpRequest(MainActivity.apiService.getNowPlaying(BuildConfig.apiKey, page));
+                break;
+            case QueryType.QUERY_POPULAR:
+                setUpRequest(MainActivity.apiService.getPopular(BuildConfig.apiKey, page));
                 break;
             case QueryType.QUERY_SEARCH:
                 setUpRequest(MainActivity.apiService.searchByTitle(BuildConfig.apiKey,
@@ -226,12 +237,12 @@ public class GridFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    public void resetFragment() {
+    public void resetFragment(int value) {
         movies.clear();
         adapter.notifyDataSetChanged();
 
         Bundle bundle = new Bundle();
-        bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_TOP_RATED);
+        bundle.putInt(QueryType.QUERY_TYPE, value);
         loadContent(bundle, 1);
     }
 
@@ -247,5 +258,32 @@ public class GridFragment extends Fragment {
         */
         spanCount = spanCount <= 1 ? DEFAULT_VERT_SPAN_COUNT : spanCount;
         spanCount = spanCount >= 5 ? (int)Math.round(spanCount * TILE_NUM_RATIO) : spanCount;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.home_filters, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.upcoming:
+                resetFragment(QueryType.QUERY_UPCOMING);
+                break;
+            case R.id.now_playing:
+                resetFragment(QueryType.QUERY_NOW_PLAYING);
+                break;
+            case R.id.popular:
+                resetFragment(QueryType.QUERY_POPULAR);
+                break;
+            case R.id.top_rated:
+                resetFragment(QueryType.QUERY_TOP_RATED);
+                break;
+            default:
+                Log.e("GridFragment menu", "Invalid Id");
+        }
+        return true;
     }
 }
