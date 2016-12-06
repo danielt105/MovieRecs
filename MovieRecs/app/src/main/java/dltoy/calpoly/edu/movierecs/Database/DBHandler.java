@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import dltoy.calpoly.edu.movierecs.Api.DateConverter;
@@ -65,6 +66,10 @@ public class DBHandler extends SQLiteOpenHelper {
     }
 
     public void addMovie(Movie movie) {
+        addMovie(movie, DateConverter.getCurrentDate());
+    }
+
+    public void addMovie(Movie movie, Date added) {
         if (containsMovie(movie))
             return;
 
@@ -78,7 +83,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(KEY_RATING, movie.getRating() + "");
         values.put(KEY_DESC, movie.getDescription());
         values.put(KEY_RELEASE, movie.getRawDate());
-        values.put(KEY_DATE_ADDED, DateConverter.getCurrentDateString());
+        values.put(KEY_DATE_ADDED, DateConverter.dateToString(added));
 
         db.insert(TABLE_MOVIES, null, values);
         db.close();

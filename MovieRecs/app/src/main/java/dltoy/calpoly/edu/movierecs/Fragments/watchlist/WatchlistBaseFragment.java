@@ -91,7 +91,7 @@ public abstract class WatchlistBaseFragment extends Fragment  {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(list.getContext(), DividerItemDecoration.VERTICAL);
         list.addItemDecoration(dividerItemDecoration);
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.DOWN) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 return false;
@@ -99,6 +99,30 @@ public abstract class WatchlistBaseFragment extends Fragment  {
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                if (direction == ItemTouchHelper.LEFT || direction == ItemTouchHelper.RIGHT) {
+                    final Movie movie = ((WatchlistAdapter.WatchlistViewHolder) viewHolder).movie;
+                    MainActivity.db.deleteMovie(movie);
+
+                    final int index = movieList.indexOf(movie);
+                    movieList.remove(index);
+                    adapter.notifyItemRemoved(index);
+
+                    String msg = "Deleted " + movie.getTitle() + " from your watchlist";
+                    Snackbar snackbar = Snackbar.make(list, msg, Snackbar.LENGTH_LONG);
+                    snackbar.setAction(R.string.undo, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            MainActivity.db.addMovie(movie, movie.getDateAdded());
+                            movieList.add(index, movie);
+                            adapter.notifyItemInserted(index);
+                            adapter.notifyItemRangeChanged(index, movieList.size());
+                        }
+                    });
+                    snackbar.getView().setBackgroundColor(ContextCompat
+                            .getColor(list.getContext(), R.color.colorPrimary));
+                    snackbar.show();
+
+                }
             }
         }).attachToRecyclerView(list);
 

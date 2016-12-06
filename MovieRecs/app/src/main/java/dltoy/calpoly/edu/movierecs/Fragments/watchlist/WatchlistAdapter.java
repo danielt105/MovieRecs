@@ -80,7 +80,7 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
     }
 
     public class WatchlistViewHolder extends RecyclerView.ViewHolder implements
-            View.OnClickListener, CompoundButton.OnCheckedChangeListener, View.OnLongClickListener {
+            View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
         private Context context;
         private TextView title;
@@ -96,7 +96,6 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
 
         public WatchlistViewHolder(View itemView) {
             super(itemView);
-            itemView.setOnLongClickListener(this);
             context = itemView.getContext();
             title = (TextView) itemView.findViewById(R.id.watchlist_entry_title);
             rating = (TextView) itemView.findViewById(R.id.watchlist_entry_rating);
@@ -206,39 +205,6 @@ public class WatchlistAdapter extends RecyclerView.Adapter<WatchlistAdapter.Watc
                 curAlpha = initAlpha;
             }
             itemView.setAlpha(curAlpha);
-        }
-
-        @Override
-        public boolean onLongClick(View view) {
-            displayAlertDialog(view.getContext());
-            return true;
-        }
-
-        private void displayAlertDialog(Context c) {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(c);
-            alertDialogBuilder.setTitle(context.getResources().getString(R.string.alert_dialog_title));
-
-            // set dialog message
-            alertDialogBuilder
-                    .setMessage(context.getResources().getString(R.string.alert_dialog_text) + ": " +
-                            movie.getTitle() + "?")
-                    .setPositiveButton(context.getResources().getString(R.string.remove),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,int id) {
-                                    MainActivity.db.deleteMovie(movie);
-                                    movies.remove(movie);
-                                    notifyDataSetChanged();
-                                }
-                            })
-                    .setNegativeButton(context.getResources().getString(R.string.cancel),
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog,int id) {
-                                    dialog.cancel();
-                                }
-                            });
-
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
         }
     }
 
