@@ -109,8 +109,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Fragment cur = getSupportFragmentManager().findFragmentById(R.id.content);
         if (cur == null) {
             switchToFragment(curFragId == -1 ? R.id.home : curFragId);
-        } else {
-            cur.setRetainInstance(false);
         }
     }
 
@@ -140,6 +138,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (temp == null || !(temp instanceof GridFragment)) {
                     revertLayout();
                     GridFragment gf = new GridFragment();
+                    Log.e("GET ID", String.valueOf(gf.getId()));
                     Bundle bundle = new Bundle();
 
                     bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_TOP_RATED);

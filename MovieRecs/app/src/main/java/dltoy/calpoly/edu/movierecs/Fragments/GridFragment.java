@@ -72,15 +72,8 @@ public class GridFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        return inflater.inflate(R.layout.grid, container, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        /*srf = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
-        srf.setEnabled(false);*/
-        //showLoadingIcon(true);
+        View grid = inflater.inflate(R.layout.grid, container, false);
+        Bundle args = getArguments();
 
         if (savedInstanceState != null) {
             shouldReload = savedInstanceState.getBoolean(RELOAD_CONTENT);
@@ -88,16 +81,16 @@ public class GridFragment extends Fragment {
 
         if (shouldReload) {
             shouldReload = false;
-            loadContent(getArguments(), 1);
+            loadContent(args, 1);
         }
 
-        Bundle args = getArguments();
         boolean isHorizontal = false;
         if (getArguments().containsKey(USE_HORIZONTAL)) {
             isHorizontal = args.getBoolean(USE_HORIZONTAL);
         }
 
         adapter.setHorizontal(isHorizontal);
+        noResults = (TextView) grid.findViewById(R.id.no_results_text);
 
         // calculate screen width and determine tile width based on that
         DisplayMetrics metrics = new DisplayMetrics();
@@ -110,12 +103,10 @@ public class GridFragment extends Fragment {
             spanCount--;
         }
         if (getArguments().containsKey(SPAN_COUNT)) {
-            spanCount = args.getInt(SPAN_COUNT);
+            spanCount = getArguments().getInt(SPAN_COUNT);
         }
 
-        noResults = (TextView) getView().findViewById(R.id.no_results_text);
-
-        rv = (RecyclerView) getView().findViewById(R.id.movie_grid);
+        rv = (RecyclerView) grid.findViewById(R.id.movie_grid);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(rv.getContext(), spanCount,
                 isHorizontal ? GridLayoutManager.HORIZONTAL : GridLayoutManager.VERTICAL, false);
         rv.setLayoutManager(gridLayoutManager);
@@ -128,6 +119,13 @@ public class GridFragment extends Fragment {
         if (!isSearch) {
             addEndlessScrollListener(rv);
         }
+
+        return grid;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     private void addEndlessScrollListener(RecyclerView rv) {
@@ -180,7 +178,11 @@ public class GridFragment extends Fragment {
         }
     }
 
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e("GET ID", String.valueOf(this.getId()));
+    }
 
     protected void setUpRequest(Observable<ResultList<Movie>> obs) {
         obs.subscribeOn(Schedulers.io())
