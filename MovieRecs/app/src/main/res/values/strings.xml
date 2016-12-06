@@ -7,6 +7,9 @@
     <string name="date_added">Recently Added</string>
     <string name="top_rated">Top Rated</string>
     <string name="latest">Release Date</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="popular">Popular</string>
+    <string name="now_playing">Now Playing</string>
 
     <!--nav drawer-->
     <string name="home">Home</string>
