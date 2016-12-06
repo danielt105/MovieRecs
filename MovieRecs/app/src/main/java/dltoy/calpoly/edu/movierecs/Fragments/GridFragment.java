@@ -118,16 +118,16 @@ public class GridFragment extends Fragment {
         anim.setFirstOnly(false);
         rv.setAdapter(anim);
 
-        if (!isSearch) {
-            addEndlessScrollListener(rv);
-        }
-
         return grid;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (!isSearch) {
+            addEndlessScrollListener(rv);
+        }
     }
 
     private void addEndlessScrollListener(RecyclerView rv) {
