@@ -189,12 +189,6 @@ public class GridFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.e("GET ID", String.valueOf(this.getId()));
-    }
-
     protected void setUpRequest(Observable<ResultList<Movie>> obs) {
         obs.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -226,6 +220,7 @@ public class GridFragment extends Fragment {
     }
 
     public void setIsSearching(boolean isSearching) {
+        this.isSearch = isSearching;
         if (isSearching) {
             rv.clearOnScrollListeners();
         } else {
@@ -243,6 +238,9 @@ public class GridFragment extends Fragment {
         movies.clear();
         adapter.notifyDataSetChanged();
         totalPages = 1;
+
+        rv.clearOnScrollListeners();
+        addEndlessScrollListener(rv);
 
         Bundle bundle = new Bundle();
         bundle.putInt(QueryType.QUERY_TYPE, value);
