@@ -79,7 +79,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(KEY_MOVIE_ID, movie.getId());
         values.put(KEY_TITLE, movie.getTitle());
         values.put(KEY_IMG, movie.getImagePath());
-        values.put(KEY_WATCHED, 0);
+        values.put(KEY_WATCHED, movie.isWatched() ? 1 : 0);
         values.put(KEY_RATING, movie.getRating() + "");
         values.put(KEY_DESC, movie.getDescription());
         values.put(KEY_RELEASE, movie.getRawDate());
