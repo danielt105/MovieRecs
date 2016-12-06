@@ -7,9 +7,10 @@
     android:paddingTop="2dp"
     android:paddingBottom="2dp">
     <ImageView
-        android:layout_width="100dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
+        android:layout_weight=".3"
         android:id="@+id/watchlist_image"/>
     <LinearLayout
         android:layout_width="0dp"
@@ -21,18 +22,23 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/watchlist_entry_title"/>
+            android:id="@+id/watchlist_entry_title"
+            android:textSize="19sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/white"
             android:id="@+id/watchlist_entry_rating"/>
         <TextView
             android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/watchlist_entry_description"
-            android:ellipsize="end"
-            android:maxLines="4"/>
+            android:maxLines="4"
+            android:ellipsize="end" />
     </LinearLayout>
     <CheckBox
         android:layout_width="0dp"

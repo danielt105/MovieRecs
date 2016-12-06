@@ -23,7 +23,8 @@
             android:maxLines="1"
             android:textStyle="bold"
             android:textColor="@color/gridText"
-            android:background="@color/dim_foreground_disabled_material_light" />
+            android:background="@color/dim_foreground_disabled_material_light"
+            android:ellipsize="end"/>
 
         <TextView android:id="@+id/movie_rating"
             android:layout_width="wrap_content"
