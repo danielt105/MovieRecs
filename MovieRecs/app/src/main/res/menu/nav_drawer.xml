@@ -3,23 +3,28 @@
     <group android:checkableBehavior="single" android:id="@+id/options">
         <item
             android:id="@+id/home"
-            android:title="@string/home"/>
+            android:title="@string/home"
+            android:icon="@drawable/ic_local_movies_white_24dp"/>
         <item
             android:id="@+id/advSearch"
-            android:title="@string/adv_search"/>
+            android:title="@string/adv_search"
+            android:icon="@drawable/ic_filter_list_white_24dp"/>
     </group>
     <group android:checkableBehavior="single" android:id="@+id/watchlist_ops">
         <item
             android:id="@+id/watchlist"
-            android:title="@string/watchlist"/>
+            android:title="@string/watchlist"
+            android:icon="@drawable/ic_playlist_add_check_white_24dp"/>
         <item
             android:id="@+id/not_watchedlist"
-            android:title="@string/not_watchlist"/>
+            android:title="@string/not_watchlist"
+            android:icon="@drawable/ic_playlist_add_white_24dp"/>
     </group>
     <group android:checkableBehavior="single" android:id="@+id/settings_options">
         <item
             android:id="@+id/settings"
-            android:title="@string/settings"/>
+            android:title="@string/settings"
+            android:icon="@drawable/ic_settings_white_24dp" />
     </group>
 
 </menu>
