@@ -113,18 +113,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    protected void onStop() {
-        if (isChangingConfigurations()) {
-            Fragment f = getSupportFragmentManager().findFragmentById(R.id.content);
-            if (f != null) {
-                f.setRetainInstance(true);
-            }
-        }
-
-        super.onStop();
-    }
-
-    @Override
     public Object onRetainCustomNonConfigurationInstance() {
         return savedSearch;
     }
@@ -138,7 +126,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (temp == null || !(temp instanceof GridFragment)) {
                     revertLayout();
                     GridFragment gf = new GridFragment();
-                    Log.e("GET ID", String.valueOf(gf.getId()));
                     Bundle bundle = new Bundle();
 
                     bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_TOP_RATED);
@@ -187,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void loadFragment(int newTitle, int layoutId, Fragment newFragment) {
         toolbar.setTitle(newTitle);
         navView.setCheckedItem(layoutId);
+        newFragment.setRetainInstance(true);
         getSupportFragmentManager().beginTransaction().replace(R.id.content, newFragment).commit();
     }
 
