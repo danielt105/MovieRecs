@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     GridFragment gf = new GridFragment();
                     Bundle bundle = new Bundle();
 
-                    bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_UPCOMING);
+                    bundle.putInt(QueryType.QUERY_TYPE, QueryType.QUERY_NOW_PLAYING);
                     bundle.putBoolean(Constants.IS_HOME, true);
                     gf.setArguments(bundle);
 
@@ -463,7 +463,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public boolean onMenuItemClick(MenuItem item) {
                 toggleMenuItems(true);
                 GridFragment gf = (GridFragment)getSupportFragmentManager().findFragmentById(R.id.content);
-                gf.resetFragment(QueryType.QUERY_UPCOMING);
+                gf.resetFragment(QueryType.QUERY_NOW_PLAYING);
                 gf.setIsSearching(false);
 
                 menu.close();

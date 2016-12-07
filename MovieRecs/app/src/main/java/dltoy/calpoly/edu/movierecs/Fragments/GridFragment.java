@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -200,6 +201,7 @@ public class GridFragment extends Fragment {
                     @Override
                     public void onError(Throwable e) {
                         Log.e("Grid", "got an error loading movies " + e.getMessage());
+                        Toast.makeText(getContext(), "Network error loading movies", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
