@@ -1,7 +1,9 @@
 package dltoy.calpoly.edu.movierecs.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
@@ -15,6 +17,7 @@ import dltoy.calpoly.edu.movierecs.R;
 public class SettingsFragment extends PreferenceFragmentCompat {
 
     ListPreference themeChoice;
+    Preference tmdb;
     private String[] curThemes;
     private SharedPreferences pref;
     private int themeNdx;
@@ -44,6 +47,16 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 e.commit();
                 getActivity().recreate();
                 return true;
+            }
+        });
+
+        tmdb = (Preference) getPreferenceManager().findPreference(getString(R.string.link_key));
+        tmdb.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.themoviedb.org"));
+                startActivity(browserIntent);
+                return false;
             }
         });
     }

@@ -11,6 +11,11 @@
     <string name="popular">Popular</string>
     <string name="now_playing">Now Playing</string>
 
+    <string name="attribution">Attribution</string>
+    <string name="link_key">link_key</string>
+    <string name="moviedb_by_name">The Movie DB</string>
+    <string name="moviedb">This product uses the TMDb API but is not endorsed or certified by TMDb.</string>
+
     <!--nav drawer-->
     <string name="home">Home</string>
     <string name="adv_search">Advanced Search</string>

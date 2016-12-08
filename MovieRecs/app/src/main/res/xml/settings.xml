@@ -11,4 +11,10 @@
             android:entries="@array/theme_options"
             android:entryValues="@array/theme_values" />
     </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/attribution">
+        <Preference
+            android:title="@string/moviedb_by_name"
+            android:key="link_key"/>
+    </PreferenceCategory>
 </PreferenceScreen>
